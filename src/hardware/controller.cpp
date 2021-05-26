@@ -14,6 +14,13 @@ uint16_t hardware::controller::turnRightVal;
 uint8_t hardware::controller::buttonsPrevState = 0xFF;
 void (*hardware::controller::buttonsCallback[8][2])(uint8_t);
 
+bool hardware::controller::switch0State;
+bool hardware::controller::switch1State;
+bool hardware::controller::switch2State;
+bool hardware::controller::switch3State;
+
+hd44780_I2Cexp hardware::controller::lcd;
+
 void testPressedCallback(uint8_t buttonIndex) {
   LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Pressed");
 }
@@ -35,11 +42,22 @@ void hardware::controller::init() {
   PORT_CONTROLLER_BUTTONS_PORT = 0xFF;
 
   memset(buttonsCallback, 0, sizeof(buttonsCallback));
-
   for (int i = 0; i < 8; i++) {
     buttonsCallback[i][0] = &testPressedCallback;
     buttonsCallback[i][1] = &testReleaseCallback;
   }
+
+  pinMode(PIN_CONTROLLER_SWITCH_0, INPUT_PULLUP);
+  pinMode(PIN_CONTROLLER_SWITCH_1, INPUT_PULLUP);
+  pinMode(PIN_CONTROLLER_SWITCH_2, INPUT_PULLUP);
+  pinMode(PIN_CONTROLLER_SWITCH_3, INPUT_PULLUP);
+
+  int lcdBeginStatus =
+      lcd.begin(CONTROLLER_LCD_NUM_COLS, CONTROLLER_LCD_NUM_ROWS);
+  if (lcdBeginStatus) {
+    hd44780::fatalError(lcdBeginStatus);
+  }
+  lcd.clear();
 }
 
 void hardware::controller::loop() {
@@ -61,4 +79,9 @@ void hardware::controller::loop() {
 
     buttonsPrevState = buttonsState;
   }
+
+  switch0State = digitalRead(PIN_CONTROLLER_SWITCH_0);
+  switch1State = digitalRead(PIN_CONTROLLER_SWITCH_1);
+  switch2State = digitalRead(PIN_CONTROLLER_SWITCH_2);
+  switch3State = digitalRead(PIN_CONTROLLER_SWITCH_3);
 }
