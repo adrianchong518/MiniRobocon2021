@@ -1,5 +1,4 @@
-#ifndef CONTROL_ROUTINES_H
-#define CONTROL_ROUTINES_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -22,5 +21,3 @@ void runSeq(const int seqID);
 
 }  // namespace routines
 }  // namespace control
-
-#endif  // CONTROL_ROUTINES_H

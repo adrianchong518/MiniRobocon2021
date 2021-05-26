@@ -1,5 +1,4 @@
-#ifndef HARDWARE_SERVOS_H
-#define HARDWARE_SERVOS_H
+#pragma once
 
 #include <Servo.h>
 
@@ -16,5 +15,3 @@ void startingPosition();
 
 }  // namespace servos
 }  // namespace hardware
-
-#endif  // HARDWARE_SERVOS_H

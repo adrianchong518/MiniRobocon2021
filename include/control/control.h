@@ -1,5 +1,4 @@
-#ifndef CONTROL_CONTROL_H
-#define CONTROL_CONTROL_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -12,5 +11,3 @@ void init();
 void loop();
 
 }  // namespace control
-
-#endif  // CONTROL_CONTROL_H

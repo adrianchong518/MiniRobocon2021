@@ -1,5 +1,4 @@
-#ifndef HARDWARE_HARDWARE_H
-#define HARDWARE_HARDWARE_H
+#pragma once
 
 #include "hardware/Mecanum.h"
 #include "hardware/Motor.h"
@@ -30,5 +29,3 @@ void stopAll();
 void loop();
 
 }  // namespace hardware
-
-#endif  // HARDWARE_HARDWARE_H

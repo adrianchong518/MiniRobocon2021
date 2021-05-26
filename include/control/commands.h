@@ -1,5 +1,4 @@
-#ifndef CONTROL_COMMANDS_H
-#define CONTROL_COMMANDS_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -10,5 +9,3 @@ int parseInput(const String &command);
 
 }  // namespace commands
 }  // namespace control
-
-#endif  // CONTROL_COMMANDS_H
