@@ -18,7 +18,8 @@ void control::routines::loop() {
     }
   }
 
-  if (routineList[runningRoutine]->loop()) {
+  if (runningRoutine != RoutineID::NONE &&
+      routineList[runningRoutine]->loop()) {
     runningRoutine = RoutineID::NONE;
   }
 }

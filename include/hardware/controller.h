@@ -9,6 +9,8 @@
 namespace hardware {
 namespace controller {
 
+extern bool isJoystickEnabled;
+
 extern uint16_t joystickXVal;
 extern uint16_t joystickYVal;
 

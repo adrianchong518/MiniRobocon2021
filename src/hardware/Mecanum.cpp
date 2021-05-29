@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include "hardware/interface.h"
+#include "utils/fast_trig.h"
 
 hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
                            Motor *const wheelBL, Motor *const wheelBR)
@@ -100,11 +101,11 @@ void hardware::Mecanum::setSpeed(const double speed) {
 void hardware::Mecanum::setDirection(const double direction) {
   m_direction = direction;
 
-  while (m_direction > PI) {
+  while (m_direction > 2 * PI) {
     m_direction -= 2 * PI;
   }
 
-  while (m_direction < -PI) {
+  while (m_direction < 0) {
     m_direction += 2 * PI;
   }
 
@@ -145,42 +146,32 @@ void hardware::Mecanum::getMotorsSpeeds(int16_t &wheelFLSpeed,
 }
 
 void hardware::Mecanum::setMotorsSpeeds() {
-  double scalingFactor = (255 - abs(m_rotationSpeedDiff) / 2.0) / 255.0;
+  const double halfRotationSpeedDiff = m_rotationSpeedDiff * 0.5;
+  const double speedScalingFactor = 1 - abs(halfRotationSpeedDiff) / 255.0;
+  const uint16_t directionScaled =
+      (m_direction + M_PI_4) * FAST_TRIG_RAD_TO_UINT;
 
-  double x0 = sin(m_direction + M_PI_4);
-  double y0 = cos(m_direction + M_PI_4);
+  const double x0 =
+      (double)sin_fast(directionScaled) * FAST_TRIG_RETURN_TO_RESULT;
+  const double y0 =
+      (double)cos_fast(directionScaled) * FAST_TRIG_RETURN_TO_RESULT;
+  const double mapScalingFactor =
+      1.0 / max(abs(x0), abs(y0)) * m_speed * 255 * speedScalingFactor;
 
-  double x1 = x0 / (max(abs(x0), abs(y0))) * m_speed * 255;
-  double y1 = y0 / (max(abs(x0), abs(y0))) * m_speed * 255;
+  const double x1 = x0 * mapScalingFactor;
+  const double y1 = y0 * mapScalingFactor;
 
-  m_wheelFLSpeed = round((x1 * scalingFactor + m_rotationSpeedDiff / 2.0));
+  m_wheelFLSpeed = (x1 + halfRotationSpeedDiff);
   m_wheelFL->setSpeed(m_wheelFLSpeed);
 
-  m_wheelFRSpeed = round(-(y1 * scalingFactor - m_rotationSpeedDiff / 2.0));
+  m_wheelFRSpeed = -(y1 - halfRotationSpeedDiff);
   m_wheelFR->setSpeed(m_wheelFRSpeed);
 
-  m_wheelBLSpeed = round((y1 * scalingFactor + m_rotationSpeedDiff / 2.0));
+  m_wheelBLSpeed = (y1 + halfRotationSpeedDiff);
   m_wheelBL->setSpeed(m_wheelBLSpeed);
 
-  m_wheelBRSpeed = round(-(x1 * scalingFactor - m_rotationSpeedDiff / 2.0));
+  m_wheelBRSpeed = -(x1 - halfRotationSpeedDiff);
   m_wheelBR->setSpeed(m_wheelBRSpeed);
-
-  // Serial.print(m_speed);
-  // Serial.print('\t');
-  // Serial.print(degrees(m_direction));
-  // Serial.print('\t');
-  // Serial.print(m_rotationSpeedDiff);
-  // Serial.print('\t');
-  // Serial.print(scalingFactor);
-  // Serial.print('\t');
-  // Serial.print(m_wheelFLSpeed);
-  // Serial.print('\t');
-  // Serial.print(m_wheelFRSpeed);
-  // Serial.print('\t');
-  // Serial.print(m_wheelBLSpeed);
-  // Serial.print('\t');
-  // Serial.print(m_wheelBRSpeed);
-  // Serial.print('\n');
 }
 
 void hardware::Mecanum::setMotorsSpeeds(const int16_t wheelFLSpeed,

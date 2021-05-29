@@ -5,6 +5,8 @@
 #include "constants.h"
 #include "hardware/interface.h"
 
+bool hardware::controller::isJoystickEnabled = true;
+
 uint16_t hardware::controller::joystickXVal;
 uint16_t hardware::controller::joystickYVal;
 

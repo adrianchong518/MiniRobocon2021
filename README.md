@@ -6,7 +6,7 @@ The project is coded on VSCode with the extension PlatformIO installed.
 
 ## Todo
 
-- [x] Implement controller interfaces (switches, LCD)
+- [x] ~~Implement controller interfaces (switches, LCD)~~
 - [ ] Implement interfaces (NeoPixel) & Refactor
 - [ ] Implement sensors
   - [ ] Collision detection
