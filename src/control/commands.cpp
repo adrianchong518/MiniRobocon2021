@@ -92,6 +92,45 @@ int servosCommands(const String &command) {
   return 0;
 }
 
+int distanceSensorsCommands(const String &command) {
+  int sensorIndex;
+
+  if (command == "vr") {
+    for (int i = 0; i < 8; i++) {
+      hardware::sensors::distanceSensors[i].printValue();
+    }
+    return 0;
+  } else if (command == "enable") {
+    for (int i = 0; i < 8; i++) {
+      hardware::sensors::distanceSensors[i].setIsEnabled(true);
+    }
+    return 0;
+  } else if (command == "disable") {
+    for (int i = 0; i < 8; i++) {
+      hardware::sensors::distanceSensors[i].setIsEnabled(false);
+    }
+    return 0;
+  }
+
+  sensorIndex = command.substring(0, 1).toInt();
+  if (sensorIndex < 0 || sensorIndex >= 8) {
+    return -1;
+  }
+
+  String subcommand = command.substring(2);
+  if (subcommand == "vr") {
+    hardware::sensors::distanceSensors[sensorIndex].printValue();
+  } else if (subcommand == "enable") {
+    hardware::sensors::distanceSensors[sensorIndex].setIsEnabled(true);
+  } else if (subcommand == "disable") {
+    hardware::sensors::distanceSensors[sensorIndex].setIsEnabled(false);
+  } else {
+    return -1;
+  }
+
+  return 0;
+}
+
 int manualCommands(const String &command) {
   if (command == "t") {
     control::manual::setIsManualEnabled(!control::manual::isManualEnabled);
@@ -126,6 +165,8 @@ int control::commands::parseInput(const String &command) {
     return mecanumCommands(command.substring(2));
   } else if (command.startsWith("s ")) {
     return servosCommands(command.substring(2));
+  } else if (command.startsWith("dist ")) {
+    return distanceSensorsCommands(command.substring(5));
   } else if (command.startsWith("manual ")) {
     return manualCommands(command.substring(7));
   } else if (command.startsWith("run ")) {

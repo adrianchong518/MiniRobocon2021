@@ -63,11 +63,13 @@ void hardware::controller::init() {
 }
 
 void hardware::controller::loop() {
+  if (isJoystickEnabled) {
   joystickXVal = analogRead(PIN_CONTROLLER_JOYSTICK_X);
   joystickYVal = analogRead(PIN_CONTROLLER_JOYSTICK_Y);
 
   turnLeftVal = analogRead(PIN_CONTROLLER_TURN_LEFT);
   turnRightVal = analogRead(PIN_CONTROLLER_TURN_RIGHT);
+  }
 
   uint8_t buttonsState = PORT_CONTROLLER_BUTTONS_PIN;
   if ((buttonsState ^ buttonsPrevState) != 0) {

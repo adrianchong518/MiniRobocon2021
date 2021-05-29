@@ -3,7 +3,7 @@
 #include "hardware/Mecanum.h"
 #include "hardware/Motor.h"
 // #include "hardware/encoders.h"
-// #include "hardware/sensors/sensors.h"
+#include "hardware/sensors/sensors.h"
 #include "hardware/servos.h"
 #include "hardware/controller.h"
 #include "hardware/interface.h"

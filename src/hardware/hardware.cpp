@@ -18,7 +18,7 @@ void hardware::init() {
   LOG_INFO("<Hardware>\tInit Start...");
 
   // interface::init();
-  // sensors::init();
+  sensors::init();
   // encoders::init();
   servos::init();
   controller::init();
@@ -53,7 +53,7 @@ void hardware::stopAll() {
 void hardware::loop() {
   if (isHardwareLoopUpdating) {
     // encoders::loop();
-    // sensors::loop();
+    sensors::loop();
     mecanum.update();
     controller::loop();
   }
