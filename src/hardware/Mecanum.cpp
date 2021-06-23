@@ -1,5 +1,7 @@
 #include "hardware/Mecanum.h"
 
+#include <JY901.h>
+
 #include "constants.h"
 #include "hardware/interface.h"
 #include "utils/fast_trig.h"
@@ -7,7 +9,7 @@
 hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
                            Motor *const wheelBL, Motor *const wheelBR)
     : PID(MECANUM_ROT_PID_KP, MECANUM_ROT_PID_KI, MECANUM_ROT_PID_KD,
-          MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX),
+          MECANUM_ROT_DIFF_PID_MIN, MECANUM_ROT_DIFF_PID_MAX),
       m_wheelFL(wheelFL),
       m_wheelFR(wheelFR),
       m_wheelBL(wheelBL),
@@ -18,26 +20,25 @@ hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
 
   setAllowedError(MECANUM_ROT_ALLOWED_ERROR);
 
-  // SERIAL_GYROSCOPE.begin(SERIAL_GYROSCOPE_BAUDRATE);
+  SERIAL_GYROSCOPE.begin(SERIAL_GYROSCOPE_BAUDRATE);
 }
 
 void hardware::Mecanum::update() {
-  /*
   while (SERIAL_GYROSCOPE.available()) {
     JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
-  }
 
-  m_rotation = (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
-  if (m_rotation > PI) {
-    m_rotation -= 2 * PI;
-  } else if (m_rotation < -PI) {
-    m_rotation += 2 * PI;
+    m_rotation =
+        (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
+    if (m_rotation > PI) {
+      m_rotation -= 2 * PI;
+    } else if (m_rotation < -PI) {
+      m_rotation += 2 * PI;
+    }
   }
-  */
 
   if (m_isEnabled) {
     if (m_isGyroEnabled) {
-      // m_rotationSpeedDiff = round(calculatePID(m_rotation));
+      m_rotationSpeedDiff = calculatePID(m_rotation);
     }
 
     setMotorsSpeeds();
@@ -64,7 +65,6 @@ void hardware::Mecanum::moveStop() {
   setSpeed(0);
 }
 
-/*
 void hardware::Mecanum::findRotationOffset() {
   LOG_INFO("<Mecanum>\tFinding Rotation Offset...");
 
@@ -89,7 +89,6 @@ void hardware::Mecanum::findRotationOffset() {
   m_rotationOffset = rotationalOffset / 32768 * PI;
   LOG_INFO("<Mecanum>\tRotation Offset: " + String(degrees(m_rotationOffset)));
 }
-*/
 
 void hardware::Mecanum::setSpeed(const double speed) {
   m_speed = constrain(speed, 0, 1);

@@ -29,7 +29,7 @@ void hardware::init() {
 void hardware::calibrate() {
   LOG_INFO("<Hardware>\tCalibration Start...");
 
-  // mecanum.findRotationOffset();
+  mecanum.findRotationOffset();
 
   LOG_INFO("<Hardware>\tCalibration Complete");
 }
