@@ -92,6 +92,40 @@ int servosCommands(const String &command) {
   return 0;
 }
 
+int encodersCommands(const String &command) {
+  if (command == "r") {
+    LOG_INFO("<Encoders>\tX\t" + String(hardware::encoders::encoderXCount) +
+             "\t|\t" + String(hardware::encoders::encoderXErrorCount));
+    LOG_INFO("<Encoders>\tY\t" + String(hardware::encoders::encoderYCount) +
+             "\t|\t" + String(hardware::encoders::encoderYErrorCount));
+    LOG_INFO("<Encoders>\tBall Hitter\t" +
+             String(hardware::encoders::ballHitterEncoderCount) + "\t|\t" +
+             String(hardware::encoders::ballHitterEncoderErrorCount));
+  } else if (command == "rx") {
+    LOG_INFO("<Encoders>\tX\t" + String(hardware::encoders::encoderXCount) +
+             "\t|\t" + String(hardware::encoders::encoderXErrorCount));
+  } else if (command == "ry") {
+    LOG_INFO("<Encoders>\tY\t" + String(hardware::encoders::encoderYCount) +
+             "\t|\t" + String(hardware::encoders::encoderYErrorCount));
+  } else if (command == "rbh") {
+    LOG_INFO("<Encoders>\tBH\t" +
+             String(hardware::encoders::ballHitterEncoderCount) + "\t|\t" +
+             String(hardware::encoders::ballHitterEncoderErrorCount));
+  } else if (command == "c") {
+    hardware::encoders::clearAll();
+  } else if (command == "cx") {
+    hardware::encoders::clearEncoderX();
+  } else if (command == "cy") {
+    hardware::encoders::clearEncoderY();
+  } else if (command == "cbh") {
+    hardware::encoders::clearBallHitterEncoder();
+  } else {
+    return -1;
+  }
+
+  return 0;
+}
+
 int distanceSensorsCommands(const String &command) {
   int sensorIndex;
 
@@ -165,6 +199,8 @@ int control::commands::parseInput(const String &command) {
     return mecanumCommands(command.substring(2));
   } else if (command.startsWith("s ")) {
     return servosCommands(command.substring(2));
+  } else if (command.startsWith("e ")) {
+    return encodersCommands(command.substring(2));
   } else if (command.startsWith("dist ")) {
     return distanceSensorsCommands(command.substring(5));
   } else if (command.startsWith("manual ")) {

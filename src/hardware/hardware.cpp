@@ -19,7 +19,7 @@ void hardware::init() {
 
   // interface::init();
   sensors::init();
-  // encoders::init();
+  encoders::init();
   servos::init();
   controller::init();
 
@@ -38,7 +38,7 @@ void hardware::startingPosition() {
   LOG_INFO("<Hardware>\tHoming Start...");
 
   servos::startingPosition();
-  // encoders::startingPosition();
+  encoders::clearAll();
 
   LOG_INFO("<Hardware>\tHoming Complete");
 }
@@ -52,7 +52,6 @@ void hardware::stopAll() {
 
 void hardware::loop() {
   if (isHardwareLoopUpdating) {
-    // encoders::loop();
     sensors::loop();
     mecanum.update();
     controller::loop();
