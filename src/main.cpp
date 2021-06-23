@@ -22,7 +22,7 @@ void setup() {
 
   control::init();
 
-  LOG_INFO("<Main> Ready");
+  LOG_INFO("<Main>\tReady");
 }
 
 #ifdef IS_TIMING

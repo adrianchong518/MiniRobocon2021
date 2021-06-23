@@ -117,5 +117,5 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
   control::manual::isManualEnabled = isManualEnabled;
   hardware::controller::isJoystickEnabled = isManualEnabled;
 
-  LOG_INFO("<Manual> " + String(isManualEnabled ? "Enabled" : "Disabled"));
+  LOG_INFO("<Manual>\t" + String(isManualEnabled ? "Enabled" : "Disabled"));
 }

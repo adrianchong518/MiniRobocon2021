@@ -71,11 +71,11 @@ int servosCommands(const String &command) {
   if (command.startsWith("ru ")) {
     uint8_t pos = constrain(command.substring(3).toInt(), 0, 180);
     hardware::servos::puttingRightUpper.write(pos);
-    LOG_DEBUG("<Servos> Putting Right Upper Pos (" + String(pos) + ") Set");
+    LOG_DEBUG("<Servos>\tPutting Right Upper Pos (" + String(pos) + ") Set");
   } else if (command.startsWith("rl ")) {
     uint8_t pos = constrain(command.substring(3).toInt(), 0, 180);
     hardware::servos::puttingRightLower.write(pos);
-    LOG_DEBUG("<Servos> Putting Right Lower Pos (" + String(pos) + ") Set");
+    LOG_DEBUG("<Servos>\tPutting Right Lower Pos (" + String(pos) + ") Set");
   } else if (command == "1") {
     hardware::servos::puttingRightUpper.write(PUTTING_RIGHT_UPPER_STARTING_POS);
     hardware::servos::puttingRightLower.write(PUTTING_RIGHT_LOWER_STARTING_POS);
