@@ -22,7 +22,7 @@ void setup() {
 
   control::init();
 
-  LOG_INFO("<Main>\tReady");
+  LOG_INFO("<Main>\t\tReady");
 }
 
 #ifdef IS_TIMING
@@ -32,7 +32,7 @@ void loop() {
   hardware::loop();
   control::loop();
   end = micros();
-  LOG_INFO("<Main>\tTime Taken:\t" + String(end - start) + "\tus");
+  LOG_INFO("<Main>\t\tTime Taken:\t" + String(end - start) + "\tus");
 }
 #else
 unsigned long start, end;
