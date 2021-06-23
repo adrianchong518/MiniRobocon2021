@@ -21,8 +21,6 @@ hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
   // SERIAL_GYROSCOPE.begin(SERIAL_GYROSCOPE_BAUDRATE);
 }
 
-hardware::Mecanum::~Mecanum() {}
-
 void hardware::Mecanum::update() {
   /*
   while (SERIAL_GYROSCOPE.available()) {
@@ -119,7 +117,7 @@ void hardware::Mecanum::setRotationSpeedDiff(const int16_t rotationSpeedDiff) {
             String(m_rotationSpeedDiff) + ") Set");
 }
 
-double hardware::Mecanum::getRotation() { return degrees(m_rotation); }
+double hardware::Mecanum::getRotation() const { return degrees(m_rotation); }
 
 void hardware::Mecanum::setTarget(double rotationTarget) {
   while (rotationTarget > PI) {
@@ -138,11 +136,11 @@ void hardware::Mecanum::setTarget(double rotationTarget) {
 void hardware::Mecanum::getMotorsSpeeds(int16_t &wheelFLSpeed,
                                         int16_t &wheelFRSpeed,
                                         int16_t &wheelBLSpeed,
-                                        int16_t &wheelBRSpeed) {
-  wheelFLSpeed = m_wheelFLSpeed;
-  wheelFRSpeed = m_wheelFRSpeed;
-  wheelBLSpeed = m_wheelBLSpeed;
-  wheelBRSpeed = m_wheelBRSpeed;
+                                        int16_t &wheelBRSpeed) const {
+  wheelFLSpeed = m_wheelFL->getSpeed();
+  wheelFRSpeed = m_wheelFR->getSpeed();
+  wheelBLSpeed = m_wheelBL->getSpeed();
+  wheelBRSpeed = m_wheelBR->getSpeed();
 }
 
 void hardware::Mecanum::setMotorsSpeeds() {
@@ -161,37 +159,23 @@ void hardware::Mecanum::setMotorsSpeeds() {
   const double x1 = x0 * mapScalingFactor;
   const double y1 = y0 * mapScalingFactor;
 
-  m_wheelFLSpeed = (x1 + halfRotationSpeedDiff);
-  m_wheelFL->setSpeed(m_wheelFLSpeed);
-
-  m_wheelFRSpeed = -(y1 - halfRotationSpeedDiff);
-  m_wheelFR->setSpeed(m_wheelFRSpeed);
-
-  m_wheelBLSpeed = (y1 + halfRotationSpeedDiff);
-  m_wheelBL->setSpeed(m_wheelBLSpeed);
-
-  m_wheelBRSpeed = -(x1 - halfRotationSpeedDiff);
-  m_wheelBR->setSpeed(m_wheelBRSpeed);
+  m_wheelFL->setSpeed(x1 + halfRotationSpeedDiff);
+  m_wheelFR->setSpeed(y1 - halfRotationSpeedDiff);
+  m_wheelBL->setSpeed(y1 + halfRotationSpeedDiff);
+  m_wheelBR->setSpeed(x1 - halfRotationSpeedDiff);
 }
 
 void hardware::Mecanum::setMotorsSpeeds(const int16_t wheelFLSpeed,
                                         const int16_t wheelFRSpeed,
                                         const int16_t wheelBLSpeed,
                                         const int16_t wheelBRSpeed) {
-  m_wheelFLSpeed = wheelFLSpeed;
-  m_wheelFL->setSpeed(m_wheelFLSpeed);
-
-  m_wheelFRSpeed = wheelFRSpeed;
-  m_wheelFR->setSpeed(m_wheelFRSpeed);
-
-  m_wheelBLSpeed = wheelBLSpeed;
-  m_wheelBL->setSpeed(m_wheelBLSpeed);
-
-  m_wheelBRSpeed = wheelBRSpeed;
-  m_wheelBR->setSpeed(m_wheelBRSpeed);
+  m_wheelFL->setSpeed(wheelFLSpeed);
+  m_wheelFR->setSpeed(wheelFRSpeed);
+  m_wheelBL->setSpeed(wheelBLSpeed);
+  m_wheelBR->setSpeed(wheelBRSpeed);
 }
 
-bool hardware::Mecanum::isEnabled() { return m_isEnabled; }
+bool hardware::Mecanum::isEnabled() const { return m_isEnabled; }
 
 void hardware::Mecanum::setIsEnabled(const bool isEnabled) {
   LOG_DEBUG("<Mecanum>\t" + String(isEnabled ? "Enabled" : "Disabled"));
@@ -205,7 +189,7 @@ void hardware::Mecanum::setIsEnabled(const bool isEnabled) {
   }
 }
 
-bool hardware::Mecanum::isGyroEnabled() { return m_isGyroEnabled; }
+bool hardware::Mecanum::isGyroEnabled() const { return m_isGyroEnabled; }
 
 void hardware::Mecanum::setIsGyroEnabled(const bool isGyroEnabled) {
   LOG_DEBUG("<Mecanum>\tGyroscope " +

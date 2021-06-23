@@ -22,15 +22,9 @@ class Mecanum : public PID {
   int16_t m_rotationSpeedDiff;
   double m_rotationOffset;
 
-  int16_t m_wheelFLSpeed = 0;
-  int16_t m_wheelFRSpeed = 0;
-  int16_t m_wheelBLSpeed = 0;
-  int16_t m_wheelBRSpeed = 0;
-
  public:
   Mecanum(Motor *const wheelFL, Motor *const wheelFR, Motor *const wheelBL,
           Motor *const wheelBR);
-  ~Mecanum();
 
   void update();
 
@@ -46,20 +40,20 @@ class Mecanum : public PID {
   void setDirection(const double direction);
   void setRotationSpeedDiff(const int16_t rotationSpeedDiff);
 
-  double getRotation();
+  double getRotation() const;
 
   void setTarget(double rotationTarget);
 
   void getMotorsSpeeds(int16_t &wheelFLSpeed, int16_t &wheelFRSpeed,
-                       int16_t &wheelBLSpeed, int16_t &wheelBRSpeed);
+                       int16_t &wheelBLSpeed, int16_t &wheelBRSpeed) const;
   void setMotorsSpeeds();
   void setMotorsSpeeds(const int16_t wheelFLSpeed, const int16_t wheelFRSpeed,
                        const int16_t wheelBLSpeed, const int16_t wheelBRSpeed);
 
-  bool isEnabled();
+  bool isEnabled() const;
   void setIsEnabled(const bool isEnabled);
 
-  bool isGyroEnabled();
+  bool isGyroEnabled() const;
   void setIsGyroEnabled(const bool isGyroEnabled);
 
  protected:

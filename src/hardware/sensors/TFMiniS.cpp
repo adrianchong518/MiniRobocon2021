@@ -39,13 +39,13 @@ bool hardware::sensors::TFMiniS::readData() {
   return status;
 }
 
-int16_t hardware::sensors::TFMiniS::getDist() { return m_dist; }
+int16_t hardware::sensors::TFMiniS::getDist() const { return m_dist; }
 
-int16_t hardware::sensors::TFMiniS::getFlux() { return m_flux; }
+int16_t hardware::sensors::TFMiniS::getFlux() const { return m_flux; }
 
-int16_t hardware::sensors::TFMiniS::getTemp() { return m_temp; }
+int16_t hardware::sensors::TFMiniS::getTemp() const { return m_temp; }
 
-bool hardware::sensors::TFMiniS::isEnabled() { return m_isEnabled; }
+bool hardware::sensors::TFMiniS::isEnabled() const { return m_isEnabled; }
 
 void hardware::sensors::TFMiniS::setIsEnabled(const bool isEnabled) {
   m_isEnabled = isEnabled;
@@ -53,7 +53,7 @@ void hardware::sensors::TFMiniS::setIsEnabled(const bool isEnabled) {
             String(isEnabled ? "Enabled" : "Disabled"));
 }
 
-void hardware::sensors::TFMiniS::printValue() {
+void hardware::sensors::TFMiniS::printValue() const {
   LOG_INFO("<TFMiniS>\t0x" + String(m_addr, HEX) + "\t" + String(m_dist) +
            "cm | " + String(m_flux) + " | " + String(m_temp) + "°C");
 }
