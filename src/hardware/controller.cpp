@@ -14,7 +14,7 @@ uint16_t hardware::controller::turnLeftVal;
 uint16_t hardware::controller::turnRightVal;
 
 uint8_t hardware::controller::buttonsPrevState = 0xFF;
-void (*hardware::controller::buttonsCallback[8][2])(uint8_t);
+void (*hardware::controller::buttonsHandlers[8][2])(uint8_t);
 
 bool hardware::controller::switch0State;
 bool hardware::controller::switch1State;
@@ -35,12 +35,12 @@ void hardware::controller::init() {
   PORT_CONTROLLER_BUTTONS_DDR = 0x00;
   PORT_CONTROLLER_BUTTONS_PORT = 0xFF;
 
-  memset(buttonsCallback, 0, sizeof(buttonsCallback));
+  memset(buttonsHandlers, 0, sizeof(buttonsHandlers));
   for (int i = 0; i < 8; i++) {
-    buttonsCallback[i][0] = [](uint8_t buttonIndex) {
+    buttonsHandlers[i][0] = [](uint8_t buttonIndex) {
       LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Pressed");
     };
-    buttonsCallback[i][1] = [](uint8_t buttonIndex) {
+    buttonsHandlers[i][1] = [](uint8_t buttonIndex) {
       LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Released");
     };
   }
@@ -68,11 +68,11 @@ void hardware::controller::loop() {
   }
 
   uint8_t buttonsState = PORT_CONTROLLER_BUTTONS_PIN;
-  if ((buttonsState ^ buttonsPrevState) != 0) {
+  if (buttonsState != buttonsPrevState) {
     for (int i = 0; i < 8; i++) {
       if ((buttonsState >> i & 1) != (buttonsPrevState >> i & 1)) {
-        if (buttonsCallback[i][buttonsState >> i & 1]) {
-          (*buttonsCallback[i][buttonsState >> i & 1])(i);
+        if (buttonsHandlers[i][buttonsState >> i & 1]) {
+          (*buttonsHandlers[i][buttonsState >> i & 1])(i);
         }
       }
     }
