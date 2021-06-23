@@ -23,14 +23,6 @@ bool hardware::controller::switch3State;
 
 hd44780_I2Cexp hardware::controller::lcd;
 
-void testPressedCallback(uint8_t buttonIndex) {
-  LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Pressed");
-}
-
-void testReleaseCallback(uint8_t buttonIndex) {
-  LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Released");
-}
-
 void hardware::controller::init() {
   LOG_DEBUG("<Controller>\tInitialising...");
 
@@ -45,8 +37,12 @@ void hardware::controller::init() {
 
   memset(buttonsCallback, 0, sizeof(buttonsCallback));
   for (int i = 0; i < 8; i++) {
-    buttonsCallback[i][0] = &testPressedCallback;
-    buttonsCallback[i][1] = &testReleaseCallback;
+    buttonsCallback[i][0] = [](uint8_t buttonIndex) {
+      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Pressed");
+    };
+    buttonsCallback[i][1] = [](uint8_t buttonIndex) {
+      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Released");
+    };
   }
 
   pinMode(PIN_CONTROLLER_SWITCH_0, INPUT_PULLUP);
