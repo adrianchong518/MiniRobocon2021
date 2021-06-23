@@ -12,6 +12,7 @@ extern double joystickMappedSpeed;
 
 extern int16_t turnMappedRotationSpeedDiff;
 
+void init();
 void loop();
 
 void setIsManualEnabled(const bool isManualEnabled);

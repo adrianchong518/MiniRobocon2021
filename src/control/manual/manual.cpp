@@ -7,7 +7,7 @@
 #include "hardware/hardware.h"
 #include "hardware/controller.h"
 
-bool control::manual::isManualEnabled = true;
+bool control::manual::isManualEnabled;
 
 double control::manual::joystickHeading;
 double control::manual::joystickMappedSpeed;
@@ -87,26 +87,35 @@ void mapTurn() {
       mappedTurnLeftVal + mappedTurnRightVal;
 }
 
+void control::manual::init() {
+  setIsManualEnabled(hardware::controller::switch0State);
+}
+
 void control::manual::loop() {
+  if (isManualEnabled != hardware::controller::switch0State) {
+    setIsManualEnabled(hardware::controller::switch0State);
+  }
+
   if (isManualEnabled) {
+    if (hardware::mecanum.isGyroEnabled() !=
+        hardware::controller::switch1State) {
+      hardware::mecanum.setIsGyroEnabled(hardware::controller::switch1State);
+    }
+
     mapJoystick();
     mapTurn();
 
     hardware::mecanum.setSpeed(joystickMappedSpeed);
     hardware::mecanum.setDirection(joystickHeading);
-    hardware::mecanum.setRotationSpeedDiff(turnMappedRotationSpeedDiff);
+    if (!hardware::mecanum.isGyroEnabled()) {
+      hardware::mecanum.setRotationSpeedDiff(turnMappedRotationSpeedDiff);
+    }
   }
 }
 
 void control::manual::setIsManualEnabled(const bool isManualEnabled) {
   control::manual::isManualEnabled = isManualEnabled;
-
-  if (!isManualEnabled) {
-    hardware::mecanum.setIsGyroEnabled(false);
-    hardware::controller::isJoystickEnabled = false;
-  } else {
-    hardware::controller::isJoystickEnabled = true;
-  }
+  hardware::controller::isJoystickEnabled = isManualEnabled;
 
   LOG_INFO("<Manual> " + String(isManualEnabled ? "Enabled" : "Disabled"));
 }

@@ -4,6 +4,8 @@
 #include "hardware/hardware.h"
 #include "control/control.h"
 
+// #define IS_TIMING
+
 void setup() {
   Serial.begin(115200);
   Wire.begin();
@@ -20,9 +22,10 @@ void setup() {
 
   control::init();
 
-  LOG_DEBUG("<Main> Ready");
+  LOG_INFO("<Main> Ready");
 }
 
+#ifdef IS_TIMING
 unsigned long start, end;
 void loop() {
   start = micros();
@@ -31,3 +34,10 @@ void loop() {
   end = micros();
   LOG_INFO("<Main>\tTime Taken:\t" + String(end - start) + "\tus");
 }
+#else
+unsigned long start, end;
+void loop() {
+  hardware::loop();
+  control::loop();
+}
+#endif

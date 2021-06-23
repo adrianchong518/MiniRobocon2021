@@ -4,6 +4,7 @@
 
 #include "constants.h"
 #include "hardware/interface.h"
+#include "hardware/controller.h"
 #include "utils/fast_trig.h"
 
 hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
@@ -24,23 +25,27 @@ hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
 }
 
 void hardware::Mecanum::update() {
+  bool isGyroUpdated = false;
   while (SERIAL_GYROSCOPE.available()) {
     JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
+    isGyroUpdated = true;
+  }
 
+  if (m_isGyroEnabled && isGyroUpdated) {
     m_rotation =
-        (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
+        (double)-JY901.stcAngle.Angle[2] * 0.00003052 * PI - m_rotationOffset;
     if (m_rotation > PI) {
       m_rotation -= 2 * PI;
     } else if (m_rotation < -PI) {
       m_rotation += 2 * PI;
     }
+
+    if (m_isEnabled) {
+      m_rotationSpeedDiff = calculatePID(m_rotation);
+    }
   }
 
   if (m_isEnabled) {
-    if (m_isGyroEnabled) {
-      m_rotationSpeedDiff = calculatePID(m_rotation);
-    }
-
     setMotorsSpeeds();
   }
 }
