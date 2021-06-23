@@ -9,6 +9,9 @@ extern TFMiniS distanceSensors[8];
 
 extern unsigned long distanceSensorsPrevPollTime;
 
+extern uint8_t collisionButtonsPrevState;
+extern void (*collisionHandler)(uint8_t);
+
 void init();
 void loop();
 

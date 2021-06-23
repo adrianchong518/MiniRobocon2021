@@ -15,12 +15,22 @@ hardware::sensors::TFMiniS hardware::sensors::distanceSensors[8] = {
 
 unsigned long hardware::sensors::distanceSensorsPrevPollTime = 0;
 
+uint8_t hardware::sensors::collisionButtonsPrevState = 0xFF;
+void (*hardware::sensors::collisionHandler)(uint8_t) = nullptr;
+
 void hardware::sensors::init() {
   LOG_DEBUG("<Sensors>\tInitialising...");
 
   for (int i = 0; i < 8; i++) {
     distanceSensors[i].init();
   }
+
+  PORT_COLLISION_BUTTONS_DDR = 0x00;
+  PORT_COLLISION_BUTTONS_PORT = 0xFF;
+  collisionHandler = [](uint8_t buttonsState) {
+    LOG_INFO("<Sensors>\tCollision Buttons State:\t" +
+             String(buttonsState, BIN));
+  };
 }
 
 void hardware::sensors::loop() {
@@ -32,5 +42,13 @@ void hardware::sensors::loop() {
       }
       distanceSensorsPrevPollTime = currentTime;
     }
+  }
+
+  uint8_t collisionButtonsState = PORT_COLLISION_BUTTONS_PIN;
+  if (collisionButtonsState != collisionButtonsPrevState) {
+    if (collisionHandler) {
+      (*collisionHandler)(collisionButtonsState);
+    }
+    collisionButtonsPrevState = collisionButtonsState;
   }
 }
