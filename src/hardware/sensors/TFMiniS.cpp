@@ -17,7 +17,7 @@ bool hardware::sensors::TFMiniS::init() {
     return false;
   }
 
-  if (tfmpI2C.sendCommand(SET_FRAME_RATE, FRAME_100, m_addr)) {
+  if (tfmpI2C.sendCommand(SET_FRAME_RATE, FRAME_250, m_addr)) {
     LOG_DEBUG("<TFMiniS>\t0x" + String(m_addr, HEX) +
               "\tSet Frame Rate Succeeded");
   } else {

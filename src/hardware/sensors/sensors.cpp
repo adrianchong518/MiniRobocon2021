@@ -40,8 +40,8 @@ void hardware::sensors::loop() {
       if (distanceSensors[i].isEnabled()) {
         distanceSensors[i].readData();
       }
-      distanceSensorsPrevPollTime = currentTime;
     }
+    distanceSensorsPrevPollTime = currentTime;
   }
 
   uint8_t collisionButtonsState = PORT_COLLISION_BUTTONS_PIN;
