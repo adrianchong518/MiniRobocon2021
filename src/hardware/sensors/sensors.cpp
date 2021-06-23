@@ -24,12 +24,13 @@ void hardware::sensors::init() {
 }
 
 void hardware::sensors::loop() {
-  unsigned long currentTime = millis();
-  if (currentTime - distanceSensorsPrevPollTime >= 10) {
+  const unsigned long currentTime = millis();
+  if (currentTime - distanceSensorsPrevPollTime >= TFMINIS_POLL_INTERVAL) {
     for (int i = 0; i < 8; i++) {
       if (distanceSensors[i].isEnabled()) {
         distanceSensors[i].readData();
       }
+      distanceSensorsPrevPollTime = currentTime;
     }
   }
 }
