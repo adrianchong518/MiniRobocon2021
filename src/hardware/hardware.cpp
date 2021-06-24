@@ -17,7 +17,7 @@ bool hardware::isHardwareLoopUpdating = true;
 void hardware::init() {
   LOG_INFO("<Hardware>\tInit Start...");
 
-  // interface::init();
+  interface::init();
   sensors::init();
   encoders::init();
   servos::init();
