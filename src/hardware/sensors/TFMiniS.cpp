@@ -26,6 +26,15 @@ bool hardware::sensors::TFMiniS::init() {
     return false;
   }
 
+  if (tfmpI2C.sendCommand(DISABLE_OUTPUT, 0, m_addr)) {
+    LOG_DEBUG("<TFMiniS>\t0x" + String(m_addr, HEX) +
+              "\tDisable Output Stream Succeeded");
+  } else {
+    LOG_ERROR("<TFMiniS>\t0x" + String(m_addr, HEX) +
+              "\tDisable Output Stream Failed");
+    return false;
+  }
+
   return true;
 }
 
