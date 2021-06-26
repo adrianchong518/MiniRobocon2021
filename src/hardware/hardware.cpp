@@ -58,9 +58,10 @@ void hardware::stopAll() {
 }
 
 void hardware::loop() {
+  sensors::loop();
+  controller::loop();
+
   if (isHardwareLoopUpdating) {
-    sensors::loop();
     mecanum.update();
-    controller::loop();
   }
 }

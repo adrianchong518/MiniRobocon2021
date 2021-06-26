@@ -92,10 +92,6 @@ void control::manual::init() {
 }
 
 void control::manual::loop() {
-  if (isManualEnabled != hardware::controller::switch0State) {
-    setIsManualEnabled(hardware::controller::switch0State);
-  }
-
   if (isManualEnabled) {
     if (hardware::mecanum.isGyroEnabled() !=
         hardware::controller::switch1State) {

@@ -10,7 +10,7 @@ enum RoutineID {
 };
 
 struct {
-} data;
+} globalState;
 
 struct Routine {
   RoutineID id;
@@ -25,7 +25,7 @@ struct Routine {
 
 const RoutineID getRoutineIDByName(String name);
 
-Routine *const routineList[] = {
+static Routine *const routineList[] = {
     new Routine,
 };
 

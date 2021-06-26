@@ -7,9 +7,9 @@
 namespace control {
 namespace routines {
 
-const RoutineID *const seqList[10] = {nullptr, nullptr, nullptr, nullptr,
-                                      nullptr, nullptr, nullptr, nullptr,
-                                      nullptr, nullptr};
+static const RoutineID *const seqList[10] = {nullptr, nullptr, nullptr, nullptr,
+                                             nullptr, nullptr, nullptr, nullptr,
+                                             nullptr, nullptr};
 
 extern RoutineID runningRoutine;
 extern const RoutineID *runningSeqPtr;

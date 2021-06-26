@@ -2,8 +2,8 @@
 
 #include "hardware/hardware.h"
 #include "control/commands.h"
+#include "control/automatic/automatic.h"
 #include "control/manual/manual.h"
-#include "control/routines/routines.h"
 
 String control::input = "";
 
@@ -11,6 +11,9 @@ void control::init() {
   LOG_INFO("<Control>\tInit Start...");
   hardware::interface::lcd.setCursor(1, 3);
   hardware::interface::lcd.print("Control Init ");
+
+  manual::init();
+  automatic::init();
   LOG_INFO("<Control>\tInit Done");
 }
 
@@ -34,7 +37,7 @@ void control::loop() {
 
       case 'x':
         hardware::stopAll();
-        routines::runRoutine(routines::RoutineID::NONE);
+        automatic::stop();
 
       default:
         input.concat(inChar);
@@ -42,6 +45,14 @@ void control::loop() {
     }
   }
 
+  if (manual::isManualEnabled != hardware::controller::switch0State) {
+    manual::setIsManualEnabled(hardware::controller::switch0State);
+  }
+
+  if (automatic::isAutomaticEnabled != !hardware::controller::switch0State) {
+    automatic::setIsAutomaticEnabled(!hardware::controller::switch0State);
+  }
+
   manual::loop();
-  routines::loop();
+  automatic::loop();
 }
