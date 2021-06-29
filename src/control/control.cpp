@@ -38,6 +38,8 @@ void control::loop() {
       case 'x':
         hardware::stopAll();
         automatic::stop();
+        manual::setIsManualEnabled(true);
+        break;
 
       default:
         input.concat(inChar);
