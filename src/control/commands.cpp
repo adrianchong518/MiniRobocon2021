@@ -41,7 +41,7 @@ int mecanumCommands(const String &command) {
   } else if (command == "gt") {
     hardware::mecanum.setIsGyroEnabled(!hardware::mecanum.isGyroEnabled());
   } else if (command == "c") {
-    // hardware::mecanum.findRotationOffset();
+    hardware::mecanum.findRotationOffset();
   } else if (command == "pid") {
     LOG_INFO("<Mecanum>\tPID Constants: " + String(hardware::mecanum.Kp) +
              " | " + String(hardware::mecanum.Ki) + " | " +

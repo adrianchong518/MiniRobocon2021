@@ -103,11 +103,11 @@ void control::manual::loop() {
     }
 
     mapJoystick();
-    mapTurn();
-
     hardware::mecanum.setSpeed(joystickMappedSpeed);
     hardware::mecanum.setDirection(joystickHeading);
+
     if (!hardware::mecanum.isGyroEnabled()) {
+      mapTurn();
       hardware::mecanum.setRotationSpeedDiff(turnMappedRotationSpeedDiff);
     }
   }
