@@ -8,7 +8,9 @@ bool control::automatic::isAutomaticEnabled;
 
 control::automatic::PositionControl control::automatic::positionControl;
 
-void control::automatic::init() {}
+void control::automatic::init() {
+  setIsAutomaticEnabled(!hardware::controller::switch0State);
+}
 
 void control::automatic::loop() {
   routines::loop();

@@ -2,6 +2,7 @@
 
 #include "hardware/hardware.h"
 #include "control/manual/manual.h"
+#include "control/automatic/automatic.h"
 #include "control/routines/routines.h"
 #include "constants.h"
 
@@ -175,6 +176,44 @@ int manualCommands(const String &command) {
   return 0;
 }
 
+int automaticCommands(const String &command) {
+  if (command == "t") {
+    control::automatic::setIsAutomaticEnabled(
+        !control::automatic::isAutomaticEnabled);
+  } else {
+    return -1;
+  }
+
+  return 0;
+}
+
+int positionControlCommands(const String &command) {
+  if (command.startsWith("set ")) {
+    double posXMM = command.substring(command.indexOf(' ', 4)).toDouble();
+    double posYMM = command.substring(4, command.indexOf(' ', 4)).toDouble();
+    control::automatic::positionControl.setTargetMM(posXMM, posYMM);
+  } else if (command.startsWith("kp ")) {
+    double Kp = command.substring(3).toDouble();
+    control::automatic::positionControl.Kp = Kp;
+    LOG_DEBUG("<Position Control>\tPID Kp (" + String(Kp) + ") Set");
+  } else if (command.startsWith("ki ")) {
+    double Ki = command.substring(3).toDouble();
+    control::automatic::positionControl.Ki = Ki;
+    LOG_DEBUG("<Position Control>\tPID Ki (" + String(Ki) + ") Set");
+  } else if (command.startsWith("kd ")) {
+    double Kd = command.substring(3).toDouble();
+    control::automatic::positionControl.Kd = Kd;
+    LOG_DEBUG("<Position Control>\tPID Kd (" + String(Kd) + ") Set");
+  } else if (command == "t") {
+    control::automatic::positionControl.setIsEnabled(
+        !control::automatic::positionControl.isEnabled());
+  } else {
+    return -1;
+  }
+
+  return 0;
+}
+
 int runCommands(const String &command) {
   if (command.startsWith("routine ")) {
     control::routines::runRoutine(
@@ -205,6 +244,10 @@ int control::commands::parseInput(const String &command) {
     return distanceSensorsCommands(command.substring(5));
   } else if (command.startsWith("manual ")) {
     return manualCommands(command.substring(7));
+  } else if (command.startsWith("auto ")) {
+    return automaticCommands(command.substring(5));
+  } else if (command.startsWith("pos ")) {
+    return positionControlCommands(command.substring(4));
   } else if (command.startsWith("run ")) {
     return runCommands(command.substring(4));
   }

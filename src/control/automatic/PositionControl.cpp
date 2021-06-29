@@ -8,26 +8,32 @@
 
 control::automatic::PositionControl::PositionControl()
     : PID(POSITION_CONTROL_PID_KP, POSITION_CONTROL_PID_KI,
-          POSITION_CONTROL_PID_KD, -1, 1) {
+          POSITION_CONTROL_PID_KD, 0, 1) {
   setAllowedError(POSITION_CONTROL_PID_ALLOWED_ERROR);
 }
 
-void control::automatic::PositionControl::update(int16_t posX, int16_t posY) {
+void control::automatic::PositionControl::update(int32_t posX, int32_t posY) {
   if (m_isEnabled) {
-    const double speed = calculatePID(sqrt(posX * posX + posY * posY));
-    const double direction =
-        atan2_fast(posY - m_targetPosY, posX - m_targetPosX) *
-        FAST_TRIG_UINT_TO_RAD;
+    const double xDiff = posX - m_targetPosX;
+    const double yDiff = posY - m_targetPosY;
+    const double absTargetDistance = sqrt(xDiff * xDiff + yDiff * yDiff);
+    const double speed = calculatePID(absTargetDistance);
+    const double direction = atan2(yDiff, xDiff);
 
     hardware::mecanum.setSpeed(speed);
     hardware::mecanum.setDirection(direction);
+
+    // LOG_DEBUG("<Position Control>\t" + String(posX) + "\t" + String(posY) +
+    //           "\t" + String(xDiff) + "\t" + String(yDiff) + "\t" +
+    //           String(absTargetDistance) + "\t" + String(speed) + "\t" +
+    //           String(degrees(direction)));
   }
 }
 
 void control::automatic::PositionControl::stop() { setIsEnabled(false); }
 
-void control::automatic::PositionControl::setTarget(int16_t targetPosX,
-                                                    int16_t targetPosY) {
+void control::automatic::PositionControl::setTarget(int32_t targetPosX,
+                                                    int32_t targetPosY) {
   m_targetPosX = targetPosX;
   m_targetPosY = targetPosY;
   PID::setTarget(sqrt(targetPosX * targetPosX + targetPosY * targetPosY));
@@ -47,4 +53,8 @@ bool control::automatic::PositionControl::isEnabled() const {
 
 void control::automatic::PositionControl::setIsEnabled(bool isEnabled) {
   m_isEnabled = isEnabled;
+
+  if (isEnabled)
+    LOG_DEBUG("<Position Control>\t" +
+              String(isEnabled ? "Enabled" : "Disabled"));
 }
