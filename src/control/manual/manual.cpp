@@ -117,5 +117,12 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
   control::manual::isManualEnabled = isManualEnabled;
   hardware::controller::isJoystickEnabled = isManualEnabled;
 
+  hardware::interface::lcd.setCursor(16, 3);
+  if (isManualEnabled) {
+    hardware::interface::lcd.print("M");
+  } else {
+    hardware::interface::lcd.print("_");
+  }
+
   LOG_INFO("<Manual>\t" + String(isManualEnabled ? "Enabled" : "Disabled"));
 }

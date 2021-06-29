@@ -201,9 +201,14 @@ void hardware::Mecanum::setIsGyroEnabled(const bool isGyroEnabled) {
 
   m_isGyroEnabled = isGyroEnabled;
 
-  if (!m_isGyroEnabled) {
+  interface::lcd.setCursor(17, 3);
+  if (m_isGyroEnabled) {
+    interface::lcd.print("G");
+  } else {
     setRotationSpeedDiff(0);
     setMotorsSpeeds();
+
+    interface::lcd.print("_");
   }
 }
 

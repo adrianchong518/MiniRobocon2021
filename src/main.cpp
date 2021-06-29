@@ -20,9 +20,15 @@ void setup() {
     ;
   hardware::startingPosition();
 
+  while (DEBUG && Serial.read() != '\n')
+    ;
   control::init();
 
+  while (DEBUG && Serial.read() != '\n')
+    ;
   LOG_INFO("<Main>\t\tReady");
+  hardware::interface::lcd.setCursor(1, 3);
+  hardware::interface::lcd.print("  Main Loop  ");
 }
 
 #ifdef IS_TIMING

@@ -7,7 +7,11 @@
 
 String control::input = "";
 
-void control::init() {}
+void control::init() {
+  LOG_DEBUG("<Control>\tInitialising...");
+  hardware::interface::lcd.setCursor(1, 3);
+  hardware::interface::lcd.print("Control Init ");
+}
 
 void control::loop() {
   if (Serial.available()) {

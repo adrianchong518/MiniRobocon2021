@@ -21,8 +21,6 @@ bool hardware::controller::switch1State;
 bool hardware::controller::switch2State;
 bool hardware::controller::switch3State;
 
-hd44780_I2Cexp hardware::controller::lcd;
-
 void hardware::controller::init() {
   LOG_DEBUG("<Controller>\tInitialising...");
 
@@ -49,13 +47,6 @@ void hardware::controller::init() {
   pinMode(PIN_CONTROLLER_SWITCH_1, INPUT_PULLUP);
   pinMode(PIN_CONTROLLER_SWITCH_2, INPUT_PULLUP);
   pinMode(PIN_CONTROLLER_SWITCH_3, INPUT_PULLUP);
-
-  int lcdBeginStatus =
-      lcd.begin(CONTROLLER_LCD_NUM_COLS, CONTROLLER_LCD_NUM_ROWS);
-  if (lcdBeginStatus) {
-    hd44780::fatalError(lcdBeginStatus);
-  }
-  lcd.clear();
 }
 
 void hardware::controller::loop() {

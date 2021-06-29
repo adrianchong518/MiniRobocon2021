@@ -17,7 +17,10 @@ bool hardware::isHardwareLoopUpdating = true;
 void hardware::init() {
   LOG_INFO("<Hardware>\tInit Start...");
 
-  // interface::init();
+  interface::init();
+  interface::lcd.setCursor(1, 3);
+  interface::lcd.print("    Init     ");
+
   sensors::init();
   encoders::init();
   servos::init();
@@ -28,6 +31,8 @@ void hardware::init() {
 
 void hardware::calibrate() {
   LOG_INFO("<Hardware>\tCalibration Start...");
+  interface::lcd.setCursor(1, 3);
+  interface::lcd.print("  Calibrate  ");
 
   mecanum.findRotationOffset();
 
@@ -36,6 +41,8 @@ void hardware::calibrate() {
 
 void hardware::startingPosition() {
   LOG_INFO("<Hardware>\tHoming Start...");
+  interface::lcd.setCursor(1, 3);
+  interface::lcd.print("    Home     ");
 
   servos::startingPosition();
   encoders::clearAll();

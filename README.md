@@ -15,3 +15,16 @@ The project is coded on VSCode with the extension PlatformIO installed.
 - [ ] Implement ball hitting
 - [ ] Implement automatic path following
 - [ ] ? Separate code for Team A and Team B
+
+## Serial Control Scheme
+
+## LCD Display
+
+```monospace
+| -------------------- |
+|                      |
+|                      |
+| Sq : ID              |
+| [    State    ] MG__ |
+| -------------------- |
+```
