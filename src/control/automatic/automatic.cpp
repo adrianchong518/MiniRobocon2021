@@ -30,6 +30,9 @@ void control::automatic::setIsAutomaticEnabled(const bool isAutomaticEnabled) {
   if (isAutomaticEnabled) {
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("A-");
+  } else {
+    routines::runRoutine(routines::RoutineID::NONE);
+    positionControl.stop();
   }
 
   LOG_INFO("<Automatic>\t" +

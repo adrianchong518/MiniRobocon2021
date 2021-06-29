@@ -14,6 +14,9 @@ void hardware::interface::init() {
   }
   lcd.clear();
 
+  lcd.setCursor(0, 2);
+  lcd.print("--:--");
+
   lcd.setCursor(0, 3);
   lcd.print("[             ] ----");
 }
