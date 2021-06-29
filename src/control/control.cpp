@@ -8,9 +8,10 @@
 String control::input = "";
 
 void control::init() {
-  LOG_DEBUG("<Control>\tInitialising...");
+  LOG_INFO("<Control>\tInit Start...");
   hardware::interface::lcd.setCursor(1, 3);
   hardware::interface::lcd.print("Control Init ");
+  LOG_INFO("<Control>\tInit Done");
 }
 
 void control::loop() {

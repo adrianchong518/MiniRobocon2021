@@ -31,7 +31,7 @@ void hardware::Mecanum::update() {
     isGyroUpdated = true;
   }
 
-  if (m_isGyroEnabled && isGyroUpdated) {
+  if (isGyroUpdated) {
     m_rotation =
         (double)-JY901.stcAngle.Angle[2] * 0.00003052 * PI - m_rotationOffset;
     if (m_rotation > PI) {
@@ -40,7 +40,7 @@ void hardware::Mecanum::update() {
       m_rotation += 2 * PI;
     }
 
-    if (m_isEnabled) {
+    if (m_isGyroEnabled && m_isEnabled) {
       m_rotationSpeedDiff = calculatePID(m_rotation);
     }
   }
@@ -203,6 +203,8 @@ void hardware::Mecanum::setIsGyroEnabled(const bool isGyroEnabled) {
 
   interface::lcd.setCursor(17, 3);
   if (m_isGyroEnabled) {
+    setTarget(m_rotation);
+
     interface::lcd.print("G");
   } else {
     setRotationSpeedDiff(0);
