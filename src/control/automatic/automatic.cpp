@@ -9,7 +9,7 @@ bool control::automatic::isAutomaticEnabled;
 control::automatic::PositionControl control::automatic::positionControl;
 
 void control::automatic::init() {
-  setIsAutomaticEnabled(!hardware::controller::switch0State);
+  setIsAutomaticEnabled(!digitalRead(PIN_CONTROLLER_SWITCH_0));
 }
 
 void control::automatic::loop() {
@@ -26,6 +26,11 @@ void control::automatic::stop() {
 
 void control::automatic::setIsAutomaticEnabled(const bool isAutomaticEnabled) {
   control::automatic::isAutomaticEnabled = isAutomaticEnabled;
+
+  if (isAutomaticEnabled) {
+    hardware::interface::lcd.setCursor(16, 3);
+    hardware::interface::lcd.print("A-");
+  }
 
   LOG_INFO("<Automatic>\t" +
            String(isAutomaticEnabled ? "Enabled" : "Disabled"));

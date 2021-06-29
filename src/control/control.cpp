@@ -47,6 +47,7 @@ void control::loop() {
     }
   }
 
+  hardware::interface::lcd.setCursor(16, 3);
   if (manual::isManualEnabled != hardware::controller::switch0State) {
     manual::setIsManualEnabled(hardware::controller::switch0State);
   }
