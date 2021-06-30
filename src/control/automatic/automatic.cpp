@@ -20,15 +20,9 @@ void control::automatic::loop() {
   }
 }
 
-void control::automatic::stop() {
-  routines::runRoutine(routines::RoutineID::NONE);
-  positionControl.stop();
-  setIsAutomaticEnabled(false);
-}
+void control::automatic::stop() { setIsAutomaticEnabled(false); }
 
 void control::automatic::setIsAutomaticEnabled(const bool isAutomaticEnabled) {
-  control::automatic::isAutomaticEnabled = isAutomaticEnabled;
-
   if (isAutomaticEnabled) {
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("A-");
@@ -36,6 +30,8 @@ void control::automatic::setIsAutomaticEnabled(const bool isAutomaticEnabled) {
     routines::runRoutine(routines::RoutineID::NONE);
     positionControl.stop();
   }
+
+  control::automatic::isAutomaticEnabled = isAutomaticEnabled;
 
   LOG_INFO("<Automatic>\t" +
            String(isAutomaticEnabled ? "Enabled" : "Disabled"));
