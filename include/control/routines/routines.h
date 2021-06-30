@@ -7,7 +7,7 @@
 namespace control {
 namespace routines {
 
-static const RoutineID seq0[] = {NONE};
+static const RoutineID seq0[] = {FWD_WALL, NONE};
 static const RoutineID *const seqList[10] = {seq0,    nullptr, nullptr, nullptr,
                                              nullptr, nullptr, nullptr, nullptr,
                                              nullptr, nullptr};

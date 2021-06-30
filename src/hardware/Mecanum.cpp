@@ -52,24 +52,6 @@ void hardware::Mecanum::update() {
 
 void hardware::Mecanum::stop() { setIsEnabled(false); }
 
-void hardware::Mecanum::moveForward(const uint8_t speed) {
-  setIsGyroEnabled(true);
-  setDirection(0);
-  setSpeed(speed);
-}
-
-void hardware::Mecanum::moveBackward(const uint8_t speed) {
-  setIsGyroEnabled(true);
-  setDirection(PI);
-  setSpeed(speed);
-}
-
-void hardware::Mecanum::moveStop() {
-  setIsGyroEnabled(true);
-  setDirection(0);
-  setSpeed(0);
-}
-
 void hardware::Mecanum::findRotationOffset() {
   LOG_INFO("<Mecanum>\tFinding Rotation Offset...");
 

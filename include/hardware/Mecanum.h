@@ -30,10 +30,6 @@ class Mecanum : public PID {
 
   void stop();
 
-  void moveForward(const uint8_t speed);
-  void moveBackward(const uint8_t speed);
-  void moveStop();
-
   void findRotationOffset();
 
   void setSpeed(const double speed);

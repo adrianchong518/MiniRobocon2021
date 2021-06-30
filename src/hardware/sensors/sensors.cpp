@@ -28,8 +28,8 @@ void hardware::sensors::init() {
   PORT_COLLISION_BUTTONS_DDR = 0x00;
   PORT_COLLISION_BUTTONS_PORT = 0xFF;
   collisionHandler = [](uint8_t buttonsState) {
-    LOG_INFO("<Sensors>\tCollision Buttons State:\t" +
-             String(buttonsState, BIN));
+    LOG_DEBUG("<Sensors>\tCollision Buttons State:\t" +
+              String(buttonsState, BIN));
   };
 }
 
