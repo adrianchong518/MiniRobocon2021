@@ -57,6 +57,7 @@ void hardware::controller::loop() {
     turnLeftVal = analogRead(PIN_CONTROLLER_TURN_LEFT);
     turnRightVal = analogRead(PIN_CONTROLLER_TURN_RIGHT);
 
+#if DEBUG == 1
     interface::lcd.setCursor(0, 0);
     if (joystickXVal < 1000) interface::lcd.print("0");
     if (joystickXVal < 100) interface::lcd.print("0");
@@ -80,6 +81,7 @@ void hardware::controller::loop() {
     if (turnRightVal < 100) interface::lcd.print("0");
     if (turnRightVal < 10) interface::lcd.print("0");
     interface::lcd.print(turnRightVal);
+#endif
   }
 
   uint8_t buttonsState = PORT_CONTROLLER_BUTTONS_PIN;

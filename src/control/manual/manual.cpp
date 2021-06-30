@@ -107,6 +107,7 @@ void control::manual::loop() {
     hardware::mecanum.setSpeed(joystickMappedSpeed);
     hardware::mecanum.setDirection(joystickHeading);
 
+#if DEBUG == 1
     hardware::interface::lcd.setCursor(10, 0);
     hardware::interface::lcd.print(joystickMappedSpeed, 2);
     hardware::interface::lcd.setCursor(15, 0);
@@ -114,16 +115,19 @@ void control::manual::loop() {
         hardware::interface::lcd.print(round(degrees(joystickHeading)));
     for (size_t i = 0; i < 4 - numChar; i++)
       hardware::interface::lcd.print(" ");
+#endif
 
     if (!hardware::mecanum.isGyroEnabled()) {
       mapTurn();
       hardware::mecanum.setRotationSpeedDiff(turnMappedRotationSpeedDiff);
 
+#if DEBUG == 1
       hardware::interface::lcd.setCursor(10, 1);
       size_t numChar =
           hardware::interface::lcd.print(turnMappedRotationSpeedDiff);
       for (size_t i = 0; i < 4 - numChar; i++)
         hardware::interface::lcd.print(" ");
+#endif
     }
   }
 }
