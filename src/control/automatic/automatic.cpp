@@ -9,7 +9,7 @@ bool control::automatic::isAutomaticEnabled;
 control::automatic::PositionControl control::automatic::positionControl;
 
 void control::automatic::init() {
-  setIsAutomaticEnabled(!digitalRead(PIN_CONTROLLER_SWITCH_0));
+  setIsAutomaticEnabled(!digitalRead(PIN_CONTROLLER_SWITCH_3));
 }
 
 void control::automatic::loop() {

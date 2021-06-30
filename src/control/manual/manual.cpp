@@ -88,7 +88,7 @@ void mapTurn() {
 }
 
 void control::manual::init() {
-  setIsManualEnabled(digitalRead(PIN_CONTROLLER_SWITCH_0));
+  setIsManualEnabled(digitalRead(PIN_CONTROLLER_SWITCH_3));
 }
 
 void control::manual::loop() {
