@@ -94,8 +94,8 @@ void control::manual::init() {
 void control::manual::loop() {
   if (isManualEnabled) {
     if (hardware::mecanum.isGyroEnabled() !=
-        hardware::controller::switch1State) {
-      hardware::mecanum.setIsGyroEnabled(hardware::controller::switch1State);
+        hardware::controller::switch2State) {
+      hardware::mecanum.setIsGyroEnabled(hardware::controller::switch2State);
 
       if (hardware::mecanum.isGyroEnabled()) {
         hardware::interface::lcd.setCursor(10, 1);
@@ -110,7 +110,10 @@ void control::manual::loop() {
     hardware::interface::lcd.setCursor(10, 0);
     hardware::interface::lcd.print(joystickMappedSpeed, 2);
     hardware::interface::lcd.setCursor(15, 0);
-    hardware::interface::lcd.print(degrees(joystickHeading), 3);
+    size_t numChar =
+        hardware::interface::lcd.print(round(degrees(joystickHeading)));
+    for (size_t i = 0; i < 4 - numChar; i++)
+      hardware::interface::lcd.print(" ");
 
     if (!hardware::mecanum.isGyroEnabled()) {
       mapTurn();
@@ -119,7 +122,8 @@ void control::manual::loop() {
       hardware::interface::lcd.setCursor(10, 1);
       size_t numChar =
           hardware::interface::lcd.print(turnMappedRotationSpeedDiff);
-      for (int i = 0; i < 4 - numChar; i++) hardware::interface::lcd.print(" ");
+      for (size_t i = 0; i < 4 - numChar; i++)
+        hardware::interface::lcd.print(" ");
     }
   }
 }
@@ -129,7 +133,7 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
   hardware::controller::isJoystickEnabled = isManualEnabled;
 
   if (isManualEnabled) {
-    hardware::mecanum.setIsGyroEnabled(hardware::controller::switch1State);
+    hardware::mecanum.setIsGyroEnabled(hardware::controller::switch2State);
 
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("M");

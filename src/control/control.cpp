@@ -48,12 +48,12 @@ void control::loop() {
   }
 
   hardware::interface::lcd.setCursor(16, 3);
-  if (manual::isManualEnabled != hardware::controller::switch0State) {
-    manual::setIsManualEnabled(hardware::controller::switch0State);
+  if (manual::isManualEnabled != hardware::controller::switch3State) {
+    manual::setIsManualEnabled(hardware::controller::switch3State);
   }
 
-  if (automatic::isAutomaticEnabled != !hardware::controller::switch0State) {
-    automatic::setIsAutomaticEnabled(!hardware::controller::switch0State);
+  if (automatic::isAutomaticEnabled != !hardware::controller::switch3State) {
+    automatic::setIsAutomaticEnabled(!hardware::controller::switch3State);
   }
 
   manual::loop();
