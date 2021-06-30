@@ -140,7 +140,7 @@ void hardware::Mecanum::setMotorsSpeeds() {
   const double y0 =
       (double)cos_fast(directionScaled) * FAST_TRIG_RETURN_TO_RESULT;
   const double mapScalingFactor =
-      1.0 / max(abs(x0), abs(y0)) * m_speed * 255 * speedScalingFactor;
+      m_speed * 255 * speedScalingFactor / max(abs(x0), abs(y0));
 
   const double x1 = x0 * mapScalingFactor;
   const double y1 = y0 * mapScalingFactor;
