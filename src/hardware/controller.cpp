@@ -14,7 +14,9 @@ uint16_t hardware::controller::turnLeftVal;
 uint16_t hardware::controller::turnRightVal;
 
 uint8_t hardware::controller::buttonsPrevState = 0xFF;
-void (*hardware::controller::buttonsHandlers[8][2])(uint8_t);
+uint8_t hardware::controller::buttonsState = 0xFF;
+void (*hardware::controller::buttonsHandlers[8][2])(uint8_t, bool);
+unsigned long hardware::controller::buttonsPrevStateChangeTime[8];
 
 bool hardware::controller::switch0State;
 bool hardware::controller::switch1State;
@@ -35,12 +37,14 @@ void hardware::controller::init() {
 
   memset(buttonsHandlers, 0, sizeof(buttonsHandlers));
   for (int i = 0; i < 8; i++) {
-    buttonsHandlers[i][0] = [](uint8_t buttonIndex) {
-      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Pressed");
+    auto handler = [](uint8_t buttonIndex, bool state) {
+      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
+               String(state ? "Released" : "Pressed"));
     };
-    buttonsHandlers[i][1] = [](uint8_t buttonIndex) {
-      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Released");
-    };
+
+    buttonsHandlers[i][0] = handler;
+    buttonsHandlers[i][1] = handler;
+    buttonsPrevStateChangeTime[i] = millis();
   }
 
   pinMode(PIN_CONTROLLER_SWITCH_0, INPUT_PULLUP);
@@ -84,18 +88,24 @@ void hardware::controller::loop() {
 #endif
   }
 
-  uint8_t buttonsState = PORT_CONTROLLER_BUTTONS_PIN;
-  if (buttonsState != buttonsPrevState) {
-    for (int i = 0; i < 8; i++) {
-      if ((buttonsState >> i & 1) != (buttonsPrevState >> i & 1)) {
-        if (buttonsHandlers[i][buttonsState >> i & 1]) {
-          (*buttonsHandlers[i][buttonsState >> i & 1])(i);
+  uint8_t buttonsCurrentState = PORT_CONTROLLER_BUTTONS_PIN;
+  unsigned long currentTime = millis();
+  for (int i = 0; i < 8; i++) {
+    if ((buttonsCurrentState >> i & 1) != (buttonsPrevState >> i & 1)) {
+      buttonsPrevStateChangeTime[i] = currentTime;
+    }
+
+    if (currentTime - buttonsPrevStateChangeTime[i] >
+        CONTROLLER_BUTTONS_DEBOUNCE_TIME) {
+      if ((buttonsCurrentState >> i & 1) != (buttonsState >> i & 1)) {
+        buttonsState ^= 1 << i;
+        if (auto handler = buttonsHandlers[i][buttonsState >> i & 1]) {
+          (*handler)(i, buttonsState >> i & 1);
         }
       }
     }
-
-    buttonsPrevState = buttonsState;
   }
+  buttonsPrevState = buttonsCurrentState;
 
   switch0State = digitalRead(PIN_CONTROLLER_SWITCH_0);
   switch1State = digitalRead(PIN_CONTROLLER_SWITCH_1);
