@@ -1,6 +1,5 @@
 #include "control/routines/Routine.h"
 
-#include "constants.h"
 #include "hardware/hardware.h"
 
 const control::routines::RoutineID control::routines::getRoutineIDByName(
@@ -14,48 +13,33 @@ const control::routines::RoutineID control::routines::getRoutineIDByName(
   return RoutineID::NONE;
 }
 
-bool control::routines::ForwardWall::hasCollided;
-
-void control::routines::ForwardWall::init() {
-  hasCollided = false;
+void control::routines::CardinalMoveWall::init() {
   stage = 0;
 
-  hardware::sensors::distanceSensors[SENSOR_F1].setIsEnabled(true);
-  hardware::sensors::distanceSensors[SENSOR_F2].setIsEnabled(true);
-
-  hardware::sensors::collisionHandler = collisionHandler;
-  collisionHandler(hardware::sensors::collisionButtonsPrevState);
+  hardware::sensors::distanceSensors[sensor1Index].setIsEnabled(true);
+  hardware::sensors::distanceSensors[sensor2Index].setIsEnabled(true);
 
   hardware::mecanum.setIsGyroEnabled(true);
   hardware::mecanum.setSpeed(0.5);
-  hardware::mecanum.setDirection(0);
+  hardware::mecanum.setDirection(direction);
 }
 
-bool control::routines::ForwardWall::loop() {
-  if (hasCollided) {
+bool control::routines::CardinalMoveWall::loop() {
+  if (!(hardware::sensors::collisionButtonsState >> sensor1Index & 0b11)) {
     hardware::mecanum.setSpeed(0);
 
-    hardware::sensors::distanceSensors[SENSOR_F1].setIsEnabled(false);
-    hardware::sensors::distanceSensors[SENSOR_F2].setIsEnabled(false);
+    hardware::sensors::distanceSensors[sensor1Index].setIsEnabled(false);
+    hardware::sensors::distanceSensors[sensor2Index].setIsEnabled(false);
 
-    hardware::sensors::collisionHandler = nullptr;
     return true;
   }
 
   if (stage == 0 &&
-      (hardware::sensors::distanceSensors[SENSOR_F1].getDist() < 10 ||
-       hardware::sensors::distanceSensors[SENSOR_F2].getDist() < 10)) {
+      (hardware::sensors::distanceSensors[sensor1Index].getDist() < 10 ||
+       hardware::sensors::distanceSensors[sensor2Index].getDist() < 10)) {
     hardware::mecanum.setSpeed(0.1);
     stage = 1;
   }
 
   return false;
-}
-
-void control::routines::ForwardWall::collisionHandler(uint8_t buttonsState) {
-  LOG_DEBUG("<Sensors>\tCollision Buttons State:\t" +
-            String(buttonsState >> SENSOR_F1 & 0b11, BIN));
-  if (!(buttonsState >> SENSOR_F1 & 0b11)) {
-    hasCollided = true;
-  }
 }
