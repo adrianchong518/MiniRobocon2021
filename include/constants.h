@@ -1,5 +1,14 @@
 #pragma once
 
+#define SENSOR_L1 0
+#define SENSOR_L2 1
+#define SENSOR_R1 2
+#define SENSOR_R2 3
+#define SENSOR_F1 4
+#define SENSOR_F2 5
+#define SENSOR_B1 6
+#define SENSOR_B2 7
+
 // Pin Definitions
 
 #define PIN_WHEEL_FL_INA 32

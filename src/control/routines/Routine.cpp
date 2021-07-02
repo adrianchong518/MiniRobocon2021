@@ -1,5 +1,6 @@
 #include "control/routines/Routine.h"
 
+#include "constants.h"
 #include "hardware/hardware.h"
 
 const control::routines::RoutineID control::routines::getRoutineIDByName(
@@ -19,8 +20,8 @@ void control::routines::ForwardWall::init() {
   hasCollided = false;
   stage = 0;
 
-  hardware::sensors::distanceSensors[4].setIsEnabled(true);
-  hardware::sensors::distanceSensors[5].setIsEnabled(true);
+  hardware::sensors::distanceSensors[SENSOR_F1].setIsEnabled(true);
+  hardware::sensors::distanceSensors[SENSOR_F2].setIsEnabled(true);
 
   hardware::sensors::collisionHandler = collisionHandler;
   collisionHandler(hardware::sensors::collisionButtonsPrevState);
@@ -34,15 +35,16 @@ bool control::routines::ForwardWall::loop() {
   if (hasCollided) {
     hardware::mecanum.setSpeed(0);
 
-    hardware::sensors::distanceSensors[4].setIsEnabled(false);
-    hardware::sensors::distanceSensors[5].setIsEnabled(false);
+    hardware::sensors::distanceSensors[SENSOR_F1].setIsEnabled(false);
+    hardware::sensors::distanceSensors[SENSOR_F2].setIsEnabled(false);
 
     hardware::sensors::collisionHandler = nullptr;
     return true;
   }
 
-  if (stage == 0 && (hardware::sensors::distanceSensors[4].getDist() < 10 ||
-                     hardware::sensors::distanceSensors[5].getDist() < 10)) {
+  if (stage == 0 &&
+      (hardware::sensors::distanceSensors[SENSOR_F1].getDist() < 10 ||
+       hardware::sensors::distanceSensors[SENSOR_F2].getDist() < 10)) {
     hardware::mecanum.setSpeed(0.1);
     stage = 1;
   }
@@ -52,8 +54,8 @@ bool control::routines::ForwardWall::loop() {
 
 void control::routines::ForwardWall::collisionHandler(uint8_t buttonsState) {
   LOG_DEBUG("<Sensors>\tCollision Buttons State:\t" +
-            String(buttonsState >> 4 & 0b11, BIN));
-  if (!(buttonsState >> 4 & 0b11)) {
+            String(buttonsState >> SENSOR_F1 & 0b11, BIN));
+  if (!(buttonsState >> SENSOR_F1 & 0b11)) {
     hasCollided = true;
   }
 }
