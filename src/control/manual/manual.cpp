@@ -61,11 +61,11 @@ void mapTurn() {
   int16_t mappedTurnLeftVal;
   if (hardware::controller::turnLeftVal <
       CONTROLLER_TURN_LEFT_MAX - CONTROLLER_DEADZONE) {
-    mappedTurnLeftVal = (CONTROLLER_TURN_LEFT_MAX -
-                         (int32_t)hardware::controller::turnLeftVal) *
+    mappedTurnLeftVal = -(CONTROLLER_TURN_LEFT_MAX -
+                          (int32_t)hardware::controller::turnLeftVal) *
                         (-MECANUM_ROT_DIFF_MIN) /
                         (CONTROLLER_TURN_LEFT_MAX - CONTROLLER_TURN_LEFT_MIN);
-    mappedTurnLeftVal = constrain(mappedTurnLeftVal, 0, MECANUM_ROT_DIFF_MAX);
+    mappedTurnLeftVal = constrain(mappedTurnLeftVal, MECANUM_ROT_DIFF_MIN, 0);
   } else {
     mappedTurnLeftVal = 0;
   }
@@ -74,11 +74,11 @@ void mapTurn() {
   if (hardware::controller::turnRightVal <
       CONTROLLER_TURN_RIGHT_MAX - CONTROLLER_DEADZONE) {
     mappedTurnRightVal =
-        -(CONTROLLER_TURN_RIGHT_MAX -
-          (int32_t)hardware::controller::turnRightVal) *
+        (CONTROLLER_TURN_RIGHT_MAX -
+         (int32_t)hardware::controller::turnRightVal) *
         MECANUM_ROT_DIFF_MAX /
         (CONTROLLER_TURN_RIGHT_MAX - CONTROLLER_TURN_RIGHT_MIN);
-    mappedTurnRightVal = constrain(mappedTurnRightVal, MECANUM_ROT_DIFF_MIN, 0);
+    mappedTurnRightVal = constrain(mappedTurnRightVal, 0, MECANUM_ROT_DIFF_MAX);
   } else {
     mappedTurnRightVal = 0;
   }
@@ -113,6 +113,12 @@ void control::manual::loop() {
     hardware::interface::lcd.setCursor(15, 0);
     size_t numChar =
         hardware::interface::lcd.print(round(degrees(joystickHeading)));
+    for (size_t i = 0; i < 4 - numChar; i++)
+      hardware::interface::lcd.print(" ");
+
+    hardware::interface::lcd.setCursor(15, 1);
+    numChar =
+        hardware::interface::lcd.print(round(hardware::mecanum.getRotation()));
     for (size_t i = 0; i < 4 - numChar; i++)
       hardware::interface::lcd.print(" ");
 #endif

@@ -33,7 +33,7 @@ void hardware::Mecanum::update() {
 
   if (isGyroUpdated) {
     m_rotation =
-        (double)-JY901.stcAngle.Angle[2] * 0.00003052 * PI - m_rotationOffset;
+        (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
     if (m_rotation > PI) {
       m_rotation -= 2 * PI;
     } else if (m_rotation < -PI) {
@@ -145,10 +145,10 @@ void hardware::Mecanum::setMotorsSpeeds() {
   const double x1 = x0 * mapScalingFactor;
   const double y1 = y0 * mapScalingFactor;
 
-  m_wheelFL->setSpeed(x1 + halfRotationSpeedDiff);
-  m_wheelFR->setSpeed(y1 - halfRotationSpeedDiff);
-  m_wheelBL->setSpeed(y1 + halfRotationSpeedDiff);
-  m_wheelBR->setSpeed(x1 - halfRotationSpeedDiff);
+  m_wheelFL->setSpeed((x1 + halfRotationSpeedDiff));
+  m_wheelFR->setSpeed(-(y1 - halfRotationSpeedDiff));
+  m_wheelBL->setSpeed((y1 + halfRotationSpeedDiff));
+  m_wheelBR->setSpeed(-(x1 - halfRotationSpeedDiff));
 }
 
 void hardware::Mecanum::setMotorsSpeeds(const int16_t wheelFLSpeed,
