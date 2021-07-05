@@ -4,6 +4,7 @@
 
 #include "constants.h"
 #include "utils/fast_trig.h"
+#include "control/control.h"
 #include "hardware/hardware.h"
 #include "hardware/controller.h"
 
@@ -148,9 +149,19 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
     hardware::mecanum.setIsEnabled(true);
     hardware::mecanum.setIsGyroEnabled(hardware::controller::switch2State);
 
+    setButtonsHandlers();
+
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("M");
   } else {
+    for (int i = 0; i < 3; i++) {
+      hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
+                                                       bool state) {
+        LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
+                 String(state ? "Released" : "Pressed"));
+      };
+    }
+
 #if DEBUG == 1
     hardware::interface::lcd.setCursor(0, 0);
     hardware::interface::lcd.print("                    ");
@@ -160,4 +171,24 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
   }
 
   LOG_INFO("<Manual>\t" + String(isManualEnabled ? "Enabled" : "Disabled"));
+}
+
+void control::manual::setButtonsHandlers() {
+  for (int i = 0; i < 3; i++) {
+    switch (zone) {
+      case Zone::RED:
+        hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
+                                                         bool) {
+          hardware::servos::setRightState(buttonIndex);
+        };
+        break;
+
+      case Zone::BLUE:
+        hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
+                                                         bool) {
+          hardware::servos::setLeftState(buttonIndex);
+        };
+        break;
+    }
+  }
 }

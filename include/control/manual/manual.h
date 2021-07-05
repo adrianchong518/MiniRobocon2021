@@ -16,6 +16,7 @@ void init();
 void loop();
 
 void setIsManualEnabled(const bool isManualEnabled);
+void setButtonsHandlers();
 
 }  // namespace manual
 }  // namespace control
