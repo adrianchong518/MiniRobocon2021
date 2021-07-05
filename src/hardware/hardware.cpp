@@ -2,14 +2,18 @@
 
 #include "constants.h"
 
-hardware::Motor hardware::wheelFL(PIN_WHEEL_FL_INA, PIN_WHEEL_FL_INB,
-                                  PIN_WHEEL_FL_PWM);
-hardware::Motor hardware::wheelFR(PIN_WHEEL_FR_INA, PIN_WHEEL_FR_INB,
-                                  PIN_WHEEL_FR_PWM);
-hardware::Motor hardware::wheelBL(PIN_WHEEL_BL_INA, PIN_WHEEL_BL_INB,
-                                  PIN_WHEEL_BL_PWM);
-hardware::Motor hardware::wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB,
-                                  PIN_WHEEL_BR_PWM);
+hardware::MotorLimited hardware::wheelFL(PIN_WHEEL_FL_INA, PIN_WHEEL_FL_INB,
+                                         PIN_WHEEL_FL_PWM,
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_US);
+hardware::MotorLimited hardware::wheelFR(PIN_WHEEL_FR_INA, PIN_WHEEL_FR_INB,
+                                         PIN_WHEEL_FR_PWM,
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_US);
+hardware::MotorLimited hardware::wheelBL(PIN_WHEEL_BL_INA, PIN_WHEEL_BL_INB,
+                                         PIN_WHEEL_BL_PWM,
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_US);
+hardware::MotorLimited hardware::wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB,
+                                         PIN_WHEEL_BR_PWM,
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_US);
 hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
 bool hardware::isHardwareLoopUpdating = true;
@@ -63,5 +67,9 @@ void hardware::loop() {
 
   if (isHardwareLoopUpdating) {
     mecanum.update();
+    wheelFL.update();
+    wheelFR.update();
+    wheelBL.update();
+    wheelBR.update();
   }
 }

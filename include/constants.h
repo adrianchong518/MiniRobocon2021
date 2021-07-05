@@ -76,6 +76,8 @@
 
 // Parameters
 
+#define MECANUM_PWM_CHANGE_LIMIT_PER_US 0.001
+
 #define MECANUM_ROT_PID_KP 500
 #define MECANUM_ROT_PID_KI 0
 #define MECANUM_ROT_PID_KD 200
