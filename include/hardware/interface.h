@@ -21,7 +21,7 @@ namespace interface {
 extern Adafruit_NeoPixel grid;
 
 // clang-format off
-#define BRIGHTNESS 50
+#define BRIGHTNESS 20
 #define RED {BRIGHTNESS, 0, 0}
 #define GRE {0, BRIGHTNESS, 0}
 #define BLU {0, 0, BRIGHTNESS}
@@ -140,17 +140,17 @@ const uint8_t RED_DOWNLEFT_RETURN[25][3] PROGMEM = {GRE, GRE, GRE, BLK, RED,
                                                     RED, RED, BLK, BLK, BLK,
                                                     RED, RED, RED, RED, RED};
 
-const uint8_t RED_KICK[25][3] PROGMEM = {RED, KIC, RED, RED, KIC,
-                                         KIC, RED, KIC, RED, RED,
-                                         RED, RED, RED, KIC, KIC,
-                                         KIC, RED, KIC, RED, RED,
-                                         RED, KIC, RED, RED, KIC};
+const uint8_t RED_KICK[25][3] PROGMEM = {RED, WHI, RED, RED, WHI,
+                                         WHI, RED, WHI, RED, RED,
+                                         RED, RED, RED, WHI, WHI,
+                                         WHI, RED, WHI, RED, RED,
+                                         RED, WHI, RED, RED, WHI};
 
-const uint8_t BLU_KICK[25][3] PROGMEM = {BLU, KIC, BLU, BLU, KIC,
-                                         KIC, BLU, KIC, BLU, BLU,
-                                         BLU, BLU, BLU, KIC, KIC,
-                                         KIC, BLU, KIC, BLU, BLU,
-                                         BLU, KIC, BLU, BLU, KIC};
+const uint8_t BLU_KICK[25][3] PROGMEM = {BLU, WHI, BLU, BLU, WHI,
+                                         WHI, BLU, WHI, BLU, BLU,
+                                         BLU, BLU, BLU, WHI, WHI,
+                                         WHI, BLU, WHI, BLU, BLU,
+                                         BLU, WHI, BLU, BLU, WHI};
 
 const uint8_t BLU_STANDING_BY[25][3] PROGMEM = {BLU, BLU, BLU, BLU, BLK,
                                                BLU, BLK, BLK, BLK, BLK,
