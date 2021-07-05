@@ -1,5 +1,6 @@
 #include "control/control.h"
 
+#include "constants.h"
 #include "hardware/hardware.h"
 #include "control/commands.h"
 #include "control/automatic/automatic.h"
@@ -7,10 +8,21 @@
 
 String control::input = "";
 
+control::Zone control::zone;
+
 void control::init() {
   LOG_INFO("<Control>\tInit Start...");
   hardware::interface::lcd.setCursor(1, 3);
   hardware::interface::lcd.print("Control Init ");
+
+  hardware::interface::lcd.setCursor(18, 3);
+  if (digitalRead(PIN_CONTROLLER_SWITCH_1)) {
+    zone = Zone::RED;
+    hardware::interface::lcd.print("R");
+  } else {
+    zone = Zone::BLUE;
+    hardware::interface::lcd.print("B");
+  }
 
   manual::init();
   automatic::init();
@@ -38,7 +50,6 @@ void control::loop() {
       case 'x':
         hardware::stopAll();
         automatic::stop();
-        manual::setIsManualEnabled(true);
         break;
 
       default:

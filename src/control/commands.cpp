@@ -85,24 +85,18 @@ int servosCommands(const String &command) {
     uint8_t pos = constrain(command.substring(3).toInt(), 0, 180);
     hardware::servos::puttingLeftLower.write(pos);
     LOG_DEBUG("<Servos>\tPutting Right Lower Pos (" + String(pos) + ") Set");
+  } else if (command == "r0") {
+    hardware::servos::setRightState(0);
   } else if (command == "r1") {
-    hardware::servos::puttingRightUpper.write(PUTTING_RIGHT_UPPER_STARTING_POS);
-    hardware::servos::puttingRightLower.write(PUTTING_RIGHT_LOWER_STARTING_POS);
+    hardware::servos::setRightState(1);
   } else if (command == "r2") {
-    hardware::servos::puttingRightUpper.write(PUTTING_RIGHT_UPPER_HOLDING_POS);
-    hardware::servos::puttingRightLower.write(PUTTING_RIGHT_LOWER_HOLDING_POS);
-  } else if (command == "r3") {
-    hardware::servos::puttingRightUpper.write(PUTTING_RIGHT_UPPER_PUTTING_POS);
-    hardware::servos::puttingRightLower.write(PUTTING_RIGHT_LOWER_PUTTING_POS);
+    hardware::servos::setRightState(2);
+  } else if (command == "l0") {
+    hardware::servos::setLeftState(0);
   } else if (command == "l1") {
-    hardware::servos::puttingLeftUpper.write(PUTTING_LEFT_UPPER_STARTING_POS);
-    hardware::servos::puttingLeftLower.write(PUTTING_LEFT_LOWER_STARTING_POS);
+    hardware::servos::setLeftState(1);
   } else if (command == "l2") {
-    hardware::servos::puttingLeftUpper.write(PUTTING_LEFT_UPPER_HOLDING_POS);
-    hardware::servos::puttingLeftLower.write(PUTTING_LEFT_LOWER_HOLDING_POS);
-  } else if (command == "l3") {
-    hardware::servos::puttingLeftUpper.write(PUTTING_LEFT_UPPER_PUTTING_POS);
-    hardware::servos::puttingLeftLower.write(PUTTING_LEFT_LOWER_PUTTING_POS);
+    hardware::servos::setLeftState(2);
   } else {
     return -1;
   }

@@ -97,10 +97,12 @@ void control::manual::loop() {
         hardware::controller::switch2State) {
       hardware::mecanum.setIsGyroEnabled(hardware::controller::switch2State);
 
+#if DEBUG == 1
       if (hardware::mecanum.isGyroEnabled()) {
         hardware::interface::lcd.setCursor(10, 1);
         hardware::interface::lcd.print("    ");
       }
+#endif
     }
 
     mapJoystick();
@@ -143,15 +145,18 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
   hardware::controller::isJoystickEnabled = isManualEnabled;
 
   if (isManualEnabled) {
+    hardware::mecanum.setIsEnabled(true);
     hardware::mecanum.setIsGyroEnabled(hardware::controller::switch2State);
 
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("M");
   } else {
+#if DEBUG == 1
     hardware::interface::lcd.setCursor(0, 0);
     hardware::interface::lcd.print("                    ");
     hardware::interface::lcd.setCursor(0, 1);
     hardware::interface::lcd.print("                    ");
+#endif
   }
 
   LOG_INFO("<Manual>\t" + String(isManualEnabled ? "Enabled" : "Disabled"));

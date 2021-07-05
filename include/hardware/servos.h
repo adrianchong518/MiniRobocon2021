@@ -13,5 +13,8 @@ extern Servo puttingRightLower;
 void init();
 void startingPosition();
 
+void setLeftState(uint8_t state);
+void setRightState(uint8_t state);
+
 }  // namespace servos
 }  // namespace hardware
