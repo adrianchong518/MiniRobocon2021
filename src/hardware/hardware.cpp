@@ -1,6 +1,7 @@
 #include "hardware/hardware.h"
 
 #include "constants.h"
+#include "utils/time.h"
 
 hardware::MotorLimited hardware::wheelFL(PIN_WHEEL_FL_INA, PIN_WHEEL_FL_INB,
                                          PIN_WHEEL_FL_PWM,
@@ -71,5 +72,13 @@ void hardware::loop() {
     wheelFR.update();
     wheelBL.update();
     wheelBR.update();
+    LOG_INFO(String(wheelFL.getSpeed()) + " " + String(wheelFR.getSpeed()) +
+             " " + String(wheelBL.getSpeed()) + " " +
+             String(wheelBR.getSpeed()) + " | " +
+             String(wheelFL.getSpeedTarget()) + " " +
+             String(wheelFR.getSpeedTarget()) + " " +
+             String(wheelBL.getSpeedTarget()) + " " +
+             String(wheelBR.getSpeedTarget()) + " | " +
+             String(time::prevLoopTimeTakenMicros));
   }
 }

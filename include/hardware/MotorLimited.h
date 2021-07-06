@@ -2,16 +2,17 @@
 
 #include <Arduino.h>
 
-#include "Motor.h"
-
 namespace hardware {
 
-class MotorLimited : public Motor {
+class MotorLimited {
  private:
-  const uint8_t m_pwmChangeLimitPerUs;
+  const uint8_t m_pin_inA;
+  const uint8_t m_pin_inB;
+  const uint8_t m_pin_PWM;
+  const double m_pwmChangeLimitPerUs;
 
-  double m_speedTarget = 0;
-  unsigned long m_prevUpdateTime;
+  int16_t m_speed = 0;
+  int16_t m_speedTarget = 0;
 
  public:
   MotorLimited(const uint8_t pin_inA, const uint8_t pin_inB,
@@ -19,7 +20,11 @@ class MotorLimited : public Motor {
 
   void update();
 
+  void setSpeedTarget(const int16_t speedTarget);
+  int16_t getSpeedTarget() const;
+
   void setSpeed(const int16_t speed);
+  int16_t getSpeed() const;
 };
 
 }  // namespace hardware
