@@ -5,16 +5,16 @@
 
 hardware::MotorLimited hardware::wheelFL(PIN_WHEEL_FL_INA, PIN_WHEEL_FL_INB,
                                          PIN_WHEEL_FL_PWM,
-                                         MECANUM_PWM_CHANGE_LIMIT_PER_US);
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_MS);
 hardware::MotorLimited hardware::wheelFR(PIN_WHEEL_FR_INA, PIN_WHEEL_FR_INB,
                                          PIN_WHEEL_FR_PWM,
-                                         MECANUM_PWM_CHANGE_LIMIT_PER_US);
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_MS);
 hardware::MotorLimited hardware::wheelBL(PIN_WHEEL_BL_INA, PIN_WHEEL_BL_INB,
                                          PIN_WHEEL_BL_PWM,
-                                         MECANUM_PWM_CHANGE_LIMIT_PER_US);
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_MS);
 hardware::MotorLimited hardware::wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB,
                                          PIN_WHEEL_BR_PWM,
-                                         MECANUM_PWM_CHANGE_LIMIT_PER_US);
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_MS);
 hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
 bool hardware::isHardwareLoopUpdating = true;
@@ -72,13 +72,5 @@ void hardware::loop() {
     wheelFR.update();
     wheelBL.update();
     wheelBR.update();
-    LOG_INFO(String(wheelFL.getSpeed()) + " " + String(wheelFR.getSpeed()) +
-             " " + String(wheelBL.getSpeed()) + " " +
-             String(wheelBR.getSpeed()) + " | " +
-             String(wheelFL.getSpeedTarget()) + " " +
-             String(wheelFR.getSpeedTarget()) + " " +
-             String(wheelBL.getSpeedTarget()) + " " +
-             String(wheelBR.getSpeedTarget()) + " | " +
-             String(time::prevLoopTimeTakenMicros));
   }
 }

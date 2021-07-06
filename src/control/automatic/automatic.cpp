@@ -24,6 +24,8 @@ void control::automatic::stop() { setIsAutomaticEnabled(false); }
 
 void control::automatic::setIsAutomaticEnabled(const bool isAutomaticEnabled) {
   if (isAutomaticEnabled) {
+    hardware::mecanum.setSpeed(0);
+
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("A-");
   } else {

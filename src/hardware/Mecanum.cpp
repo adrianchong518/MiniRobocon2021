@@ -148,8 +148,8 @@ void hardware::Mecanum::setMotorsSpeeds() {
   const double x1 = x0 * mapScalingFactor;
   const double y1 = y0 * mapScalingFactor;
 
-  m_wheelFL->setSpeedTarget((x1 + halfRotationSpeedDiff));
-  m_wheelFR->setSpeedTarget(-(y1 - halfRotationSpeedDiff));
+  m_wheelFL->setSpeedTarget(-(x1 + halfRotationSpeedDiff));
+  m_wheelFR->setSpeedTarget((y1 - halfRotationSpeedDiff));
   m_wheelBL->setSpeedTarget((y1 + halfRotationSpeedDiff));
   m_wheelBR->setSpeedTarget(-(x1 - halfRotationSpeedDiff));
 }
