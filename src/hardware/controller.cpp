@@ -4,6 +4,7 @@
 
 #include "constants.h"
 #include "hardware/interface.h"
+#include "utils/time.h"
 
 bool hardware::controller::isJoystickEnabled = true;
 
@@ -89,13 +90,12 @@ void hardware::controller::loop() {
   }
 
   uint8_t buttonsCurrentState = PORT_CONTROLLER_BUTTONS_PIN;
-  unsigned long currentTime = millis();
   for (int i = 0; i < 8; i++) {
     if ((buttonsCurrentState >> i & 1) != (buttonsPrevState >> i & 1)) {
-      buttonsPrevStateChangeTime[i] = currentTime;
+      buttonsPrevStateChangeTime[i] = time::currentTimeMillis;
     }
 
-    if (currentTime - buttonsPrevStateChangeTime[i] >
+    if (time::currentTimeMillis - buttonsPrevStateChangeTime[i] >
         CONTROLLER_BUTTONS_DEBOUNCE_TIME) {
       if ((buttonsCurrentState >> i & 1) != (buttonsState >> i & 1)) {
         buttonsState ^= 1 << i;
