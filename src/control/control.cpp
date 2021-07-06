@@ -67,10 +67,10 @@ void control::loop() {
     automatic::setIsAutomaticEnabled(!hardware::controller::switch3State);
   }
 
-  hardware::interface::lcd.setCursor(18, 3);
   if (hardware::controller::switch1State) {
     if (zone != Zone::RED) {
       zone = Zone::RED;
+      hardware::interface::lcd.setCursor(18, 3);
       hardware::interface::lcd.print("R");
 
       if (manual::isManualEnabled) {
@@ -80,6 +80,7 @@ void control::loop() {
   } else {
     if (zone != Zone::BLUE) {
       zone = Zone::BLUE;
+      hardware::interface::lcd.setCursor(18, 3);
       hardware::interface::lcd.print("B");
 
       if (manual::isManualEnabled) {
