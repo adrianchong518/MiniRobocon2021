@@ -9,14 +9,14 @@ class MotorLimited {
   const uint8_t m_pin_inA;
   const uint8_t m_pin_inB;
   const uint8_t m_pin_PWM;
-  const double m_pwmChangeLimitPerUs;
+  const uint8_t m_pwmChangeLimitPerMs;
 
   int16_t m_speed = 0;
   int16_t m_speedTarget = 0;
 
  public:
   MotorLimited(const uint8_t pin_inA, const uint8_t pin_inB,
-               const uint8_t pin_PWM, const double pwmChangeLimit);
+               const uint8_t pin_PWM, const uint8_t pwmChangeLimitPerMs);
 
   void update();
 
