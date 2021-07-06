@@ -2,7 +2,6 @@
 
 #include "hardware/Mecanum.h"
 #include "hardware/Motor.h"
-#include "hardware/MotorLimited.h"
 #include "hardware/encoders.h"
 #include "hardware/sensors/sensors.h"
 #include "hardware/servos.h"
@@ -11,10 +10,10 @@
 
 namespace hardware {
 
-extern MotorLimited wheelFL;
-extern MotorLimited wheelFR;
-extern MotorLimited wheelBL;
-extern MotorLimited wheelBR;
+extern Motor wheelFL;
+extern Motor wheelFR;
+extern Motor wheelBL;
+extern Motor wheelBR;
 extern Mecanum mecanum;
 
 extern bool isHardwareLoopUpdating;
