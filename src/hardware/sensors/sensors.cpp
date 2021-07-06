@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include "hardware/interface.h"
+#include "utils/time.h"
 
 hardware::sensors::TFMiniS hardware::sensors::distanceSensors[8] = {
     hardware::sensors::TFMiniS(I2C_ADDR_TFMINIS_0),
@@ -29,14 +30,14 @@ void hardware::sensors::init() {
 }
 
 void hardware::sensors::loop() {
-  const unsigned long currentTime = millis();
-  if (currentTime - distanceSensorsPrevPollTime >= TFMINIS_POLL_INTERVAL) {
+  if (time::currentTimeMillis - distanceSensorsPrevPollTime >=
+      TFMINIS_POLL_INTERVAL) {
     for (int i = 0; i < 8; i++) {
       if (distanceSensors[i].isEnabled()) {
         distanceSensors[i].readData();
       }
     }
-    distanceSensorsPrevPollTime = currentTime;
+    distanceSensorsPrevPollTime = time::currentTimeMillis;
   }
 
   collisionButtonsState = PORT_COLLISION_BUTTONS_PIN;
