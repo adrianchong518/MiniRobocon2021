@@ -5,11 +5,13 @@
 hardware::MotorLimited::MotorLimited(const uint8_t pin_inA,
                                      const uint8_t pin_inB,
                                      const uint8_t pin_PWM,
-                                     const uint8_t pwmChangeLimitPerMs)
+                                     const uint8_t pwmChangeLimitPerMs,
+                                     const uint8_t pwmChangeLimitPerLoop)
     : m_pin_inA(pin_inA),
       m_pin_inB(pin_inB),
       m_pin_PWM(pin_PWM),
-      m_pwmChangeLimitPerMs(pwmChangeLimitPerMs) {
+      m_pwmChangeLimitPerMs(pwmChangeLimitPerMs),
+      m_pwmChangeLimitPerLoop(pwmChangeLimitPerLoop) {
   setSpeed(0);
 }
 
@@ -20,6 +22,7 @@ void hardware::MotorLimited::update() {
 
   uint8_t pwmChangeLimit =
       time::prevLoopTimeTakenMillis * m_pwmChangeLimitPerMs + 1;
+  pwmChangeLimit = min(pwmChangeLimit, m_pwmChangeLimitPerLoop);
   setSpeed(constrain(m_speedTarget, m_speed - pwmChangeLimit,
                      m_speed + pwmChangeLimit));
 }

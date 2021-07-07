@@ -45,7 +45,6 @@ void loop() {
   LOG_INFO("<Main>\t\tTime Taken:\t" + String(end - start) + "\tus");
 }
 #else
-unsigned long start, end;
 void loop() {
   time::preLoop();
   hardware::loop();

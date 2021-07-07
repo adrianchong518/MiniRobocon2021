@@ -150,8 +150,8 @@ void hardware::Mecanum::setMotorsSpeeds() {
 
   m_wheelFL->setSpeedTarget(-(x1 + halfRotationSpeedDiff));
   m_wheelFR->setSpeedTarget((y1 - halfRotationSpeedDiff));
-  m_wheelBL->setSpeedTarget((y1 + halfRotationSpeedDiff));
-  m_wheelBR->setSpeedTarget(-(x1 - halfRotationSpeedDiff));
+  m_wheelBL->setSpeedTarget(-(y1 + halfRotationSpeedDiff));
+  m_wheelBR->setSpeedTarget((x1 - halfRotationSpeedDiff));
 }
 
 void hardware::Mecanum::setMotorsSpeeds(const int16_t wheelFLSpeed,

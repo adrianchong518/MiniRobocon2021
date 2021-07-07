@@ -20,12 +20,13 @@ void control::routines::CardinalMoveWall::init() {
   hardware::sensors::distanceSensors[sensor2Index].setIsEnabled(true);
 
   hardware::mecanum.setIsGyroEnabled(true);
-  hardware::mecanum.setSpeed(0.5);
+  hardware::mecanum.setSpeed(0.6);
   hardware::mecanum.setDirection(direction);
 }
 
 bool control::routines::CardinalMoveWall::loop() {
-  if (!(hardware::sensors::collisionButtonsState >> sensor1Index & 0b11)) {
+  if ((hardware::sensors::collisionButtonsState >> sensor1Index & 0b11) ==
+      0b11) {
     hardware::mecanum.setSpeed(0);
 
     hardware::sensors::distanceSensors[sensor1Index].setIsEnabled(false);
@@ -35,9 +36,9 @@ bool control::routines::CardinalMoveWall::loop() {
   }
 
   if (stage == 0 &&
-      (hardware::sensors::distanceSensors[sensor1Index].getDist() < 10 ||
-       hardware::sensors::distanceSensors[sensor2Index].getDist() < 10)) {
-    hardware::mecanum.setSpeed(0.1);
+      (hardware::sensors::distanceSensors[sensor1Index].getDist() < 15 ||
+       hardware::sensors::distanceSensors[sensor2Index].getDist() < 15)) {
+    hardware::mecanum.setSpeed(0.3);
     stage = 1;
   }
 
