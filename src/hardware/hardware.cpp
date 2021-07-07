@@ -68,5 +68,9 @@ void hardware::loop() {
 
   if (isHardwareLoopUpdating) {
     mecanum.update();
+    wheelFL.update();
+    wheelFR.update();
+    wheelBL.update();
+    wheelBR.update();
   }
 }
