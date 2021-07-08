@@ -62,7 +62,7 @@ void hardware::controller::loop() {
     turnLeftVal = analogRead(PIN_CONTROLLER_TURN_LEFT);
     turnRightVal = analogRead(PIN_CONTROLLER_TURN_RIGHT);
 
-#if DEBUG == 1
+#if LCD_DEBUG_ENABLED == 1
     interface::lcd.setCursor(0, 0);
     if (joystickXVal < 1000) interface::lcd.print("0");
     if (joystickXVal < 100) interface::lcd.print("0");
