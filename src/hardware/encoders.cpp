@@ -47,8 +47,8 @@ ISR(PCINT1_vect) {
 }
 
 ISR(PCINT2_vect) {
-  const uint8_t PINK_TEMP = PINK;
-  const uint8_t PHASE = PINK_TEMP >> 4 & 0b11;
+  const uint8_t PINB_TEMP = PINB;
+  const uint8_t PHASE = PINB_TEMP & 0b11;
   hardware::encoders::ballHitterEncoderCount += hardware::encoders::PHASE_COMP
       [PHASE][hardware::encoders::ballHitterEncoderPrevPhase];
 
@@ -57,10 +57,10 @@ ISR(PCINT2_vect) {
     hardware::encoders::ballHitterEncoderErrorCount++;
   }
 
-  if (hardware::encoders::ballHitterEncoderIsHoming && PINK_TEMP >> 6 & 0b1) {
+  if (hardware::encoders::ballHitterEncoderIsHoming && PINB_TEMP >> 2 & 0b1) {
     cli();
     hardware::encoders::clearBallHitterEncoder();
-    PCMSK2 = 0b00110000;
+    PCMSK2 = 0b00000011;
     sei();
   }
 
@@ -79,7 +79,7 @@ void hardware::encoders::init() {
   pinMode(PIN_BALL_HITTER_ENCODER_CHA, INPUT);
   pinMode(PIN_BALL_HITTER_ENCODER_CHB, INPUT);
   pinMode(PIN_BALL_HITTER_ENCODER_CHZ, INPUT);
-  ballHitterEncoderPrevPhase = PINK >> 4 & 0b11;
+  ballHitterEncoderPrevPhase = PINB & 0b11;
 
   cli();
 
@@ -91,8 +91,8 @@ void hardware::encoders::init() {
   PCICR |= (1 << PCIE1);
   PCMSK1 = 0b00000110;
 
-  PCICR |= (1 << PCIE2);
-  PCMSK2 = 0b00110000;
+  PCICR |= (1 << PCIE0);
+  PCMSK0 = 0b00000011;
 
   sei();
 }
@@ -122,7 +122,7 @@ void hardware::encoders::clearBallHitterEncoder() {
 
 void hardware::encoders::startBallHitterEncoderHome() {
   cli();
-  PCMSK2 = 0b01110000;
+  PCMSK0 = 0b00000111;
   ballHitterEncoderIsHoming = true;
   sei();
 }
