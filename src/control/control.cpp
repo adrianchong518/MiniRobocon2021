@@ -1,16 +1,31 @@
 #include "control/control.h"
 
+#include "constants.h"
 #include "hardware/hardware.h"
 #include "control/commands.h"
+#include "control/automatic/automatic.h"
 #include "control/manual/manual.h"
-#include "control/routines/routines.h"
 
 String control::input = "";
+
+control::Zone control::zone;
 
 void control::init() {
   LOG_INFO("<Control>\tInit Start...");
   hardware::interface::lcd.setCursor(1, 3);
   hardware::interface::lcd.print("Control Init ");
+
+  hardware::interface::lcd.setCursor(18, 3);
+  if (digitalRead(PIN_CONTROLLER_SWITCH_1)) {
+    zone = Zone::RED;
+    hardware::interface::lcd.print("R");
+  } else {
+    zone = Zone::BLUE;
+    hardware::interface::lcd.print("B");
+  }
+
+  manual::init();
+  automatic::init();
   LOG_INFO("<Control>\tInit Done");
 }
 
@@ -34,7 +49,8 @@ void control::loop() {
 
       case 'x':
         hardware::stopAll();
-        routines::runRoutine(routines::RoutineID::NONE);
+        automatic::stop();
+        break;
 
       default:
         input.concat(inChar);
@@ -42,6 +58,37 @@ void control::loop() {
     }
   }
 
+  hardware::interface::lcd.setCursor(16, 3);
+  if (manual::isManualEnabled != hardware::controller::switch3State) {
+    manual::setIsManualEnabled(hardware::controller::switch3State);
+  }
+
+  if (automatic::isAutomaticEnabled != !hardware::controller::switch3State) {
+    automatic::setIsAutomaticEnabled(!hardware::controller::switch3State);
+  }
+
+  if (hardware::controller::switch1State) {
+    if (zone != Zone::RED) {
+      zone = Zone::RED;
+      hardware::interface::lcd.setCursor(18, 3);
+      hardware::interface::lcd.print("R");
+
+      if (manual::isManualEnabled) {
+        manual::setButtonsHandlers();
+      }
+    }
+  } else {
+    if (zone != Zone::BLUE) {
+      zone = Zone::BLUE;
+      hardware::interface::lcd.setCursor(18, 3);
+      hardware::interface::lcd.print("B");
+
+      if (manual::isManualEnabled) {
+        manual::setButtonsHandlers();
+      }
+    }
+  }
+
   manual::loop();
-  routines::loop();
+  automatic::loop();
 }

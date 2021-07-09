@@ -6,6 +6,9 @@ namespace control {
 
 extern String input;
 
+enum class Zone { RED, BLUE };
+extern Zone zone;
+
 void init();
 
 void loop();

@@ -1,6 +1,7 @@
 #include "control/routines/routines.h"
 
 #include "hardware/interface.h"
+#include "control/automatic/automatic.h"
 
 control::routines::RoutineID control::routines::runningRoutine =
     control::routines::RoutineID::NONE;
@@ -12,6 +13,8 @@ void control::routines::loop() {
     if (runningRoutine == RoutineID::NONE) {
       if (*runningSeqPtr == RoutineID::NONE) {
         runningSeqPtr = nullptr;
+        hardware::interface::lcd.setCursor(0, 2);
+        hardware::interface::lcd.print("--");
       } else {
         runRoutine(*(++runningSeqPtr));
       }
@@ -20,13 +23,23 @@ void control::routines::loop() {
 
   if (runningRoutine != RoutineID::NONE &&
       routineList[runningRoutine]->loop()) {
-    runningRoutine = RoutineID::NONE;
+    runRoutine(RoutineID::NONE);
   }
 }
 
 void control::routines::runRoutine(
     const control::routines::RoutineID &routineID) {
+  if (!automatic::isAutomaticEnabled) {
+    LOG_ERROR("<Routines>\tAutomatic Mode Not Enabled");
+    return;
+  }
+
   LOG_DEBUG("<Routines>\tRunning Routine: " + String(routineID));
+  hardware::interface::lcd.setCursor(3, 2);
+  if (routineID < 10) {
+    hardware::interface::lcd.print("0");
+  }
+  hardware::interface::lcd.print(routineID);
 
   runningRoutine = routineID;
   routineList[runningRoutine]->init();
@@ -39,6 +52,9 @@ void control::routines::runSeq(const int seqID) {
   }
 
   LOG_DEBUG("<Routines>\tRunning Sequence " + String(seqID));
+  hardware::interface::lcd.setCursor(0, 2);
+  hardware::interface::lcd.print("0");
+  hardware::interface::lcd.print(seqID);
 
   runningSeqPtr = seqList[seqID];
   runRoutine(*runningSeqPtr);

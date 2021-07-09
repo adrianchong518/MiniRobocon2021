@@ -24,7 +24,7 @@ The project is coded on VSCode with the extension PlatformIO installed.
 | -------------------- |
 |                      |
 |                      |
-| Sq : ID              |
+| Sq:ID            L R |
 | [    State    ] MG__ |
 | -------------------- |
 ```

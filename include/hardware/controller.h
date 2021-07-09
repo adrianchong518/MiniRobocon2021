@@ -14,7 +14,9 @@ extern uint16_t turnLeftVal;
 extern uint16_t turnRightVal;
 
 extern uint8_t buttonsPrevState;
-extern void (*buttonsHandlers[8][2])(uint8_t);
+extern uint8_t buttonsState;
+extern void (*buttonsHandlers[8][2])(uint8_t, bool);
+extern unsigned long buttonsPrevStateChangeTime[8];
 
 extern bool switch0State;
 extern bool switch1State;

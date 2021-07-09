@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#include "constants.h"
 #include "hardware/hardware.h"
 #include "control/control.h"
+#include "utils/time.h"
 
 // #define IS_TIMING
 
@@ -12,19 +14,19 @@ void setup() {
 
   hardware::init();
 
-  while (DEBUG && Serial.read() != '\n')
+  while (digitalRead(PIN_CONTROLLER_SWITCH_0) && Serial.read() != '\n')
     ;
   hardware::calibrate();
 
-  while (DEBUG && Serial.read() != '\n')
+  while (digitalRead(PIN_CONTROLLER_SWITCH_0) && Serial.read() != '\n')
     ;
   hardware::startingPosition();
 
-  while (DEBUG && Serial.read() != '\n')
+  while (digitalRead(PIN_CONTROLLER_SWITCH_0) && Serial.read() != '\n')
     ;
   control::init();
 
-  while (DEBUG && Serial.read() != '\n')
+  while (digitalRead(PIN_CONTROLLER_SWITCH_0) && Serial.read() != '\n')
     ;
   LOG_INFO("<Main>\t\tReady");
   hardware::interface::lcd.setCursor(1, 3);
@@ -35,15 +37,18 @@ void setup() {
 unsigned long start, end;
 void loop() {
   start = micros();
+  time::preLoop();
   hardware::loop();
   control::loop();
+  time::postLoop();
   end = micros();
   LOG_INFO("<Main>\t\tTime Taken:\t" + String(end - start) + "\tus");
 }
 #else
-unsigned long start, end;
 void loop() {
+  time::preLoop();
   hardware::loop();
   control::loop();
+  time::postLoop();
 }
 #endif

@@ -4,6 +4,7 @@
 
 #include "constants.h"
 #include "hardware/interface.h"
+#include "utils/time.h"
 
 bool hardware::controller::isJoystickEnabled = true;
 
@@ -14,7 +15,9 @@ uint16_t hardware::controller::turnLeftVal;
 uint16_t hardware::controller::turnRightVal;
 
 uint8_t hardware::controller::buttonsPrevState = 0xFF;
-void (*hardware::controller::buttonsHandlers[8][2])(uint8_t);
+uint8_t hardware::controller::buttonsState = 0xFF;
+void (*hardware::controller::buttonsHandlers[8][2])(uint8_t, bool);
+unsigned long hardware::controller::buttonsPrevStateChangeTime[8];
 
 bool hardware::controller::switch0State;
 bool hardware::controller::switch1State;
@@ -35,12 +38,14 @@ void hardware::controller::init() {
 
   memset(buttonsHandlers, 0, sizeof(buttonsHandlers));
   for (int i = 0; i < 8; i++) {
-    buttonsHandlers[i][0] = [](uint8_t buttonIndex) {
-      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Pressed");
+    auto handler = [](uint8_t buttonIndex, bool state) {
+      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
+               String(state ? "Released" : "Pressed"));
     };
-    buttonsHandlers[i][1] = [](uint8_t buttonIndex) {
-      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " Released");
-    };
+
+    buttonsHandlers[i][0] = handler;
+    buttonsHandlers[i][1] = handler;
+    buttonsPrevStateChangeTime[i] = millis();
   }
 
   pinMode(PIN_CONTROLLER_SWITCH_0, INPUT_PULLUP);
@@ -56,20 +61,51 @@ void hardware::controller::loop() {
 
     turnLeftVal = analogRead(PIN_CONTROLLER_TURN_LEFT);
     turnRightVal = analogRead(PIN_CONTROLLER_TURN_RIGHT);
+
+#if LCD_DEBUG_ENABLED == 1
+    interface::lcd.setCursor(0, 0);
+    if (joystickXVal < 1000) interface::lcd.print("0");
+    if (joystickXVal < 100) interface::lcd.print("0");
+    if (joystickXVal < 10) interface::lcd.print("0");
+    interface::lcd.print(joystickXVal);
+
+    interface::lcd.setCursor(5, 0);
+    if (joystickYVal < 1000) interface::lcd.print("0");
+    if (joystickYVal < 100) interface::lcd.print("0");
+    if (joystickYVal < 10) interface::lcd.print("0");
+    interface::lcd.print(joystickYVal);
+
+    interface::lcd.setCursor(0, 1);
+    if (turnLeftVal < 1000) interface::lcd.print("0");
+    if (turnLeftVal < 100) interface::lcd.print("0");
+    if (turnLeftVal < 10) interface::lcd.print("0");
+    interface::lcd.print(turnLeftVal);
+
+    interface::lcd.setCursor(5, 1);
+    if (turnRightVal < 1000) interface::lcd.print("0");
+    if (turnRightVal < 100) interface::lcd.print("0");
+    if (turnRightVal < 10) interface::lcd.print("0");
+    interface::lcd.print(turnRightVal);
+#endif
   }
 
-  uint8_t buttonsState = PORT_CONTROLLER_BUTTONS_PIN;
-  if (buttonsState != buttonsPrevState) {
-    for (int i = 0; i < 8; i++) {
-      if ((buttonsState >> i & 1) != (buttonsPrevState >> i & 1)) {
-        if (buttonsHandlers[i][buttonsState >> i & 1]) {
-          (*buttonsHandlers[i][buttonsState >> i & 1])(i);
+  uint8_t buttonsCurrentState = PORT_CONTROLLER_BUTTONS_PIN;
+  for (int i = 0; i < 8; i++) {
+    if ((buttonsCurrentState >> i & 1) != (buttonsPrevState >> i & 1)) {
+      buttonsPrevStateChangeTime[i] = time::currentTimeMillis;
+    }
+
+    if (time::currentTimeMillis - buttonsPrevStateChangeTime[i] >
+        CONTROLLER_BUTTONS_DEBOUNCE_TIME) {
+      if ((buttonsCurrentState >> i & 1) != (buttonsState >> i & 1)) {
+        buttonsState ^= 1 << i;
+        if (auto handler = buttonsHandlers[i][buttonsState >> i & 1]) {
+          (*handler)(i, buttonsState >> i & 1);
         }
       }
     }
-
-    buttonsPrevState = buttonsState;
   }
+  buttonsPrevState = buttonsCurrentState;
 
   switch0State = digitalRead(PIN_CONTROLLER_SWITCH_0);
   switch1State = digitalRead(PIN_CONTROLLER_SWITCH_1);

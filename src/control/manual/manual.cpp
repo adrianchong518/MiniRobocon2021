@@ -4,6 +4,7 @@
 
 #include "constants.h"
 #include "utils/fast_trig.h"
+#include "control/control.h"
 #include "hardware/hardware.h"
 #include "hardware/controller.h"
 
@@ -19,14 +20,16 @@ void mapJoystick() {
   if (hardware::controller::joystickXVal >
       CONTROLLER_JOYSTICK_X_MID + CONTROLLER_DEADZONE) {
     normalizedX = -(double)((int32_t)hardware::controller::joystickXVal -
-                            CONTROLLER_JOYSTICK_X_MID) /
-                  (CONTROLLER_JOYSTICK_X_MAX - CONTROLLER_JOYSTICK_X_MID);
+                            CONTROLLER_JOYSTICK_X_MID - CONTROLLER_DEADZONE) /
+                  (CONTROLLER_JOYSTICK_X_MAX - CONTROLLER_JOYSTICK_X_MID -
+                   CONTROLLER_DEADZONE);
     normalizedX = constrain(normalizedX, -1, 1);
   } else if (hardware::controller::joystickXVal <
              CONTROLLER_JOYSTICK_X_MID - CONTROLLER_DEADZONE) {
     normalizedX = -(double)((int32_t)hardware::controller::joystickXVal -
-                            CONTROLLER_JOYSTICK_X_MID) /
-                  (CONTROLLER_JOYSTICK_X_MID - CONTROLLER_JOYSTICK_X_MIN);
+                            CONTROLLER_JOYSTICK_X_MID + CONTROLLER_DEADZONE) /
+                  (CONTROLLER_JOYSTICK_X_MID - CONTROLLER_JOYSTICK_X_MIN -
+                   CONTROLLER_DEADZONE);
     normalizedX = constrain(normalizedX, -1, 1);
   } else {
     normalizedX = 0;
@@ -36,14 +39,16 @@ void mapJoystick() {
   if (hardware::controller::joystickYVal >
       CONTROLLER_JOYSTICK_Y_MID + CONTROLLER_DEADZONE) {
     normalizedY = (double)((int32_t)hardware::controller::joystickYVal -
-                           CONTROLLER_JOYSTICK_Y_MID) /
-                  (CONTROLLER_JOYSTICK_Y_MAX - CONTROLLER_JOYSTICK_Y_MID);
+                           CONTROLLER_JOYSTICK_Y_MID - CONTROLLER_DEADZONE) /
+                  (CONTROLLER_JOYSTICK_Y_MAX - CONTROLLER_JOYSTICK_Y_MID -
+                   CONTROLLER_DEADZONE);
     normalizedY = constrain(normalizedY, -1, 1);
   } else if (hardware::controller::joystickYVal <
              CONTROLLER_JOYSTICK_Y_MID - CONTROLLER_DEADZONE) {
     normalizedY = (double)((int32_t)hardware::controller::joystickYVal -
-                           CONTROLLER_JOYSTICK_Y_MID) /
-                  (CONTROLLER_JOYSTICK_Y_MID - CONTROLLER_JOYSTICK_Y_MIN);
+                           CONTROLLER_JOYSTICK_Y_MID + CONTROLLER_DEADZONE) /
+                  (CONTROLLER_JOYSTICK_Y_MID - CONTROLLER_JOYSTICK_Y_MIN -
+                   CONTROLLER_DEADZONE);
     normalizedY = constrain(normalizedY, -1, 1);
   } else {
     normalizedY = 0;
@@ -55,16 +60,21 @@ void mapJoystick() {
       FAST_TRIG_UINT_TO_RAD;
   control::manual::joystickMappedSpeed =
       fmax(fabs(normalizedX), fabs(normalizedY));
+
+  Serial.println(String(normalizedX) + " " + String(normalizedY) + " " +
+                 String(control::manual::joystickHeading) + " " +
+                 String(control::manual::joystickMappedSpeed));
 }
 
 void mapTurn() {
   int16_t mappedTurnLeftVal;
   if (hardware::controller::turnLeftVal <
       CONTROLLER_TURN_LEFT_MAX - CONTROLLER_DEADZONE) {
-    mappedTurnLeftVal = -(CONTROLLER_TURN_LEFT_MAX -
+    mappedTurnLeftVal = -(CONTROLLER_TURN_LEFT_MAX - CONTROLLER_DEADZONE -
                           (int32_t)hardware::controller::turnLeftVal) *
                         (-MECANUM_ROT_DIFF_MIN) /
-                        (CONTROLLER_TURN_LEFT_MAX - CONTROLLER_TURN_LEFT_MIN);
+                        (CONTROLLER_TURN_LEFT_MAX - CONTROLLER_TURN_LEFT_MIN -
+                         CONTROLLER_DEADZONE);
     mappedTurnLeftVal = constrain(mappedTurnLeftVal, MECANUM_ROT_DIFF_MIN, 0);
   } else {
     mappedTurnLeftVal = 0;
@@ -73,11 +83,11 @@ void mapTurn() {
   int16_t mappedTurnRightVal;
   if (hardware::controller::turnRightVal <
       CONTROLLER_TURN_RIGHT_MAX - CONTROLLER_DEADZONE) {
-    mappedTurnRightVal =
-        (CONTROLLER_TURN_RIGHT_MAX -
-         (int32_t)hardware::controller::turnRightVal) *
-        MECANUM_ROT_DIFF_MAX /
-        (CONTROLLER_TURN_RIGHT_MAX - CONTROLLER_TURN_RIGHT_MIN);
+    mappedTurnRightVal = (CONTROLLER_TURN_RIGHT_MAX - CONTROLLER_DEADZONE -
+                          (int32_t)hardware::controller::turnRightVal) *
+                         MECANUM_ROT_DIFF_MAX /
+                         (CONTROLLER_TURN_RIGHT_MAX -
+                          CONTROLLER_TURN_RIGHT_MIN - CONTROLLER_DEADZONE);
     mappedTurnRightVal = constrain(mappedTurnRightVal, 0, MECANUM_ROT_DIFF_MAX);
   } else {
     mappedTurnRightVal = 0;
@@ -88,27 +98,54 @@ void mapTurn() {
 }
 
 void control::manual::init() {
-  setIsManualEnabled(hardware::controller::switch0State);
+  setIsManualEnabled(digitalRead(PIN_CONTROLLER_SWITCH_3));
 }
 
 void control::manual::loop() {
-  if (isManualEnabled != hardware::controller::switch0State) {
-    setIsManualEnabled(hardware::controller::switch0State);
-  }
-
   if (isManualEnabled) {
     if (hardware::mecanum.isGyroEnabled() !=
-        hardware::controller::switch1State) {
-      hardware::mecanum.setIsGyroEnabled(hardware::controller::switch1State);
+        hardware::controller::switch2State) {
+      hardware::mecanum.setIsGyroEnabled(hardware::controller::switch2State);
+
+#if LCD_DEBUG_ENABLED == 1
+      if (hardware::mecanum.isGyroEnabled()) {
+        hardware::interface::lcd.setCursor(10, 1);
+        hardware::interface::lcd.print("    ");
+      }
+#endif
     }
 
     mapJoystick();
     hardware::mecanum.setSpeed(joystickMappedSpeed);
     hardware::mecanum.setDirection(joystickHeading);
 
+#if LCD_DEBUG_ENABLED == 1
+    hardware::interface::lcd.setCursor(10, 0);
+    hardware::interface::lcd.print(joystickMappedSpeed, 2);
+    hardware::interface::lcd.setCursor(15, 0);
+    size_t numChar =
+        hardware::interface::lcd.print(round(degrees(joystickHeading)));
+    for (size_t i = 0; i < 4 - numChar; i++)
+      hardware::interface::lcd.print(" ");
+
+    hardware::interface::lcd.setCursor(15, 1);
+    numChar =
+        hardware::interface::lcd.print(round(hardware::mecanum.getRotation()));
+    for (size_t i = 0; i < 4 - numChar; i++)
+      hardware::interface::lcd.print(" ");
+#endif
+
     if (!hardware::mecanum.isGyroEnabled()) {
       mapTurn();
       hardware::mecanum.setRotationSpeedDiff(turnMappedRotationSpeedDiff);
+
+#if LCD_DEBUG_ENABLED == 1
+      hardware::interface::lcd.setCursor(10, 1);
+      size_t numChar =
+          hardware::interface::lcd.print(turnMappedRotationSpeedDiff);
+      for (size_t i = 0; i < 4 - numChar; i++)
+        hardware::interface::lcd.print(" ");
+#endif
     }
   }
 }
@@ -117,12 +154,50 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
   control::manual::isManualEnabled = isManualEnabled;
   hardware::controller::isJoystickEnabled = isManualEnabled;
 
-  hardware::interface::lcd.setCursor(16, 3);
   if (isManualEnabled) {
+    hardware::mecanum.setIsEnabled(true);
+    hardware::mecanum.setIsGyroEnabled(hardware::controller::switch2State);
+
+    setButtonsHandlers();
+
+    hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("M");
   } else {
-    hardware::interface::lcd.print("_");
+    for (int i = 0; i < 3; i++) {
+      hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
+                                                       bool state) {
+        LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
+                 String(state ? "Released" : "Pressed"));
+      };
+    }
+
+#if LCD_DEBUG_ENABLED == 1
+    hardware::interface::lcd.setCursor(0, 0);
+    hardware::interface::lcd.print("                    ");
+    hardware::interface::lcd.setCursor(0, 1);
+    hardware::interface::lcd.print("                    ");
+#endif
   }
 
   LOG_INFO("<Manual>\t" + String(isManualEnabled ? "Enabled" : "Disabled"));
+}
+
+void control::manual::setButtonsHandlers() {
+  for (int i = 0; i < 3; i++) {
+    switch (zone) {
+      case Zone::RED:
+        hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
+                                                         bool) {
+          hardware::servos::setRightState(buttonIndex);
+        };
+        break;
+
+      case Zone::BLUE:
+        hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
+                                                         bool) {
+          hardware::servos::setLeftState(buttonIndex);
+        };
+        break;
+    }
+  }
 }

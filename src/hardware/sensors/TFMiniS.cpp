@@ -58,6 +58,10 @@ bool hardware::sensors::TFMiniS::isEnabled() const { return m_isEnabled; }
 
 void hardware::sensors::TFMiniS::setIsEnabled(const bool isEnabled) {
   m_isEnabled = isEnabled;
+  if (m_isEnabled) {
+    readData();
+  }
+
   LOG_DEBUG("<TFMiniS>\t0x" + String(m_addr, HEX) + "\t" +
             String(isEnabled ? "Enabled" : "Disabled"));
 }

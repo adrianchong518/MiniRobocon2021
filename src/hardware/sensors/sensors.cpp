@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include "hardware/interface.h"
+#include "utils/time.h"
 
 hardware::sensors::TFMiniS hardware::sensors::distanceSensors[8] = {
     hardware::sensors::TFMiniS(I2C_ADDR_TFMINIS_0),
@@ -15,8 +16,7 @@ hardware::sensors::TFMiniS hardware::sensors::distanceSensors[8] = {
 
 unsigned long hardware::sensors::distanceSensorsPrevPollTime = 0;
 
-uint8_t hardware::sensors::collisionButtonsPrevState = 0xFF;
-void (*hardware::sensors::collisionHandler)(uint8_t) = nullptr;
+uint8_t hardware::sensors::collisionButtonsState = 0xFF;
 
 void hardware::sensors::init() {
   LOG_DEBUG("<Sensors>\tInitialising...");
@@ -27,28 +27,18 @@ void hardware::sensors::init() {
 
   PORT_COLLISION_BUTTONS_DDR = 0x00;
   PORT_COLLISION_BUTTONS_PORT = 0xFF;
-  collisionHandler = [](uint8_t buttonsState) {
-    LOG_INFO("<Sensors>\tCollision Buttons State:\t" +
-             String(buttonsState, BIN));
-  };
 }
 
 void hardware::sensors::loop() {
-  const unsigned long currentTime = millis();
-  if (currentTime - distanceSensorsPrevPollTime >= TFMINIS_POLL_INTERVAL) {
+  if (time::currentTimeMillis - distanceSensorsPrevPollTime >=
+      TFMINIS_POLL_INTERVAL) {
     for (int i = 0; i < 8; i++) {
       if (distanceSensors[i].isEnabled()) {
         distanceSensors[i].readData();
       }
     }
-    distanceSensorsPrevPollTime = currentTime;
+    distanceSensorsPrevPollTime = time::currentTimeMillis;
   }
 
-  uint8_t collisionButtonsState = PORT_COLLISION_BUTTONS_PIN;
-  if (collisionButtonsState != collisionButtonsPrevState) {
-    if (collisionHandler) {
-      (*collisionHandler)(collisionButtonsState);
-    }
-    collisionButtonsPrevState = collisionButtonsState;
-  }
+  collisionButtonsState = PORT_COLLISION_BUTTONS_PIN;
 }

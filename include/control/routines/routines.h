@@ -7,9 +7,10 @@
 namespace control {
 namespace routines {
 
-const RoutineID *const seqList[10] = {nullptr, nullptr, nullptr, nullptr,
-                                      nullptr, nullptr, nullptr, nullptr,
-                                      nullptr, nullptr};
+static const RoutineID seq0[] = {FWD_WALL, NONE};
+static const RoutineID *const seqList[10] = {seq0,    nullptr, nullptr, nullptr,
+                                             nullptr, nullptr, nullptr, nullptr,
+                                             nullptr, nullptr};
 
 extern RoutineID runningRoutine;
 extern const RoutineID *runningSeqPtr;

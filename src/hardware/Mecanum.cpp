@@ -7,8 +7,10 @@
 #include "hardware/controller.h"
 #include "utils/fast_trig.h"
 
-hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
-                           Motor *const wheelBL, Motor *const wheelBR)
+hardware::Mecanum::Mecanum(MotorLimited *const wheelFL,
+                           MotorLimited *const wheelFR,
+                           MotorLimited *const wheelBL,
+                           MotorLimited *const wheelBR)
     : PID(MECANUM_ROT_PID_KP, MECANUM_ROT_PID_KI, MECANUM_ROT_PID_KD,
           MECANUM_ROT_DIFF_PID_MIN, MECANUM_ROT_DIFF_PID_MAX),
       m_wheelFL(wheelFL),
@@ -33,7 +35,7 @@ void hardware::Mecanum::update() {
 
   if (isGyroUpdated) {
     m_rotation =
-        (double)-JY901.stcAngle.Angle[2] * 0.00003052 * PI - m_rotationOffset;
+        (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
     if (m_rotation > PI) {
       m_rotation -= 2 * PI;
     } else if (m_rotation < -PI) {
@@ -51,24 +53,6 @@ void hardware::Mecanum::update() {
 }
 
 void hardware::Mecanum::stop() { setIsEnabled(false); }
-
-void hardware::Mecanum::moveForward(const uint8_t speed) {
-  setIsGyroEnabled(true);
-  setDirection(0);
-  setSpeed(speed);
-}
-
-void hardware::Mecanum::moveBackward(const uint8_t speed) {
-  setIsGyroEnabled(true);
-  setDirection(PI);
-  setSpeed(speed);
-}
-
-void hardware::Mecanum::moveStop() {
-  setIsGyroEnabled(true);
-  setDirection(0);
-  setSpeed(0);
-}
 
 void hardware::Mecanum::findRotationOffset() {
   LOG_INFO("<Mecanum>\tFinding Rotation Offset...");
@@ -149,7 +133,8 @@ void hardware::Mecanum::getMotorsSpeeds(int16_t &wheelFLSpeed,
 
 void hardware::Mecanum::setMotorsSpeeds() {
   const double halfRotationSpeedDiff = m_rotationSpeedDiff * 0.5;
-  const double speedScalingFactor = 1 - abs(halfRotationSpeedDiff) / 255.0;
+  const double speedScalingFactor =
+      1 - fabs(halfRotationSpeedDiff) * 0.00392157;
   const uint16_t directionScaled =
       (m_direction + M_PI_4) * FAST_TRIG_RAD_TO_UINT;
 
@@ -158,25 +143,25 @@ void hardware::Mecanum::setMotorsSpeeds() {
   const double y0 =
       (double)cos_fast(directionScaled) * FAST_TRIG_RETURN_TO_RESULT;
   const double mapScalingFactor =
-      1.0 / max(abs(x0), abs(y0)) * m_speed * 255 * speedScalingFactor;
+      m_speed * 255 * speedScalingFactor / fmax(fabs(x0), fabs(y0));
 
   const double x1 = x0 * mapScalingFactor;
   const double y1 = y0 * mapScalingFactor;
 
-  m_wheelFL->setSpeed(x1 + halfRotationSpeedDiff);
-  m_wheelFR->setSpeed(y1 - halfRotationSpeedDiff);
-  m_wheelBL->setSpeed(y1 + halfRotationSpeedDiff);
-  m_wheelBR->setSpeed(x1 - halfRotationSpeedDiff);
+  m_wheelFL->setSpeedTarget(-(x1 + halfRotationSpeedDiff));
+  m_wheelFR->setSpeedTarget((y1 - halfRotationSpeedDiff));
+  m_wheelBL->setSpeedTarget(-(y1 + halfRotationSpeedDiff));
+  m_wheelBR->setSpeedTarget((x1 - halfRotationSpeedDiff));
 }
 
 void hardware::Mecanum::setMotorsSpeeds(const int16_t wheelFLSpeed,
                                         const int16_t wheelFRSpeed,
                                         const int16_t wheelBLSpeed,
                                         const int16_t wheelBRSpeed) {
-  m_wheelFL->setSpeed(wheelFLSpeed);
-  m_wheelFR->setSpeed(wheelFRSpeed);
-  m_wheelBL->setSpeed(wheelBLSpeed);
-  m_wheelBR->setSpeed(wheelBRSpeed);
+  m_wheelFL->setSpeedTarget(wheelFLSpeed);
+  m_wheelFR->setSpeedTarget(wheelFRSpeed);
+  m_wheelBL->setSpeedTarget(wheelBLSpeed);
+  m_wheelBR->setSpeedTarget(wheelBRSpeed);
 }
 
 bool hardware::Mecanum::isEnabled() const { return m_isEnabled; }

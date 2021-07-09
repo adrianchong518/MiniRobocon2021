@@ -10,6 +10,7 @@ class Motor {
   const uint8_t m_pin_inB;
   const uint8_t m_pin_PWM;
 
+ protected:
   int16_t m_speed = 0;
 
  public:

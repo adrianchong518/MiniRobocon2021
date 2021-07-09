@@ -2,7 +2,7 @@
 
 #include <PID.h>
 
-#include "hardware/Motor.h"
+#include "hardware/MotorLimited.h"
 
 namespace hardware {
 
@@ -11,10 +11,10 @@ class Mecanum : public PID {
   bool m_isEnabled = true;
   bool m_isGyroEnabled = false;
 
-  Motor *const m_wheelFL;
-  Motor *const m_wheelFR;
-  Motor *const m_wheelBL;
-  Motor *const m_wheelBR;
+  MotorLimited *const m_wheelFL;
+  MotorLimited *const m_wheelFR;
+  MotorLimited *const m_wheelBL;
+  MotorLimited *const m_wheelBR;
 
   double m_speed;
   double m_direction;
@@ -23,16 +23,12 @@ class Mecanum : public PID {
   double m_rotationOffset;
 
  public:
-  Mecanum(Motor *const wheelFL, Motor *const wheelFR, Motor *const wheelBL,
-          Motor *const wheelBR);
+  Mecanum(MotorLimited *const wheelFL, MotorLimited *const wheelFR,
+          MotorLimited *const wheelBL, MotorLimited *const wheelBR);
 
   void update();
 
   void stop();
-
-  void moveForward(const uint8_t speed);
-  void moveBackward(const uint8_t speed);
-  void moveStop();
 
   void findRotationOffset();
 
