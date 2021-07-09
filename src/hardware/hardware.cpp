@@ -6,19 +6,23 @@
 hardware::MotorLimited hardware::wheelFL(PIN_WHEEL_FL_INA, PIN_WHEEL_FL_INB,
                                          PIN_WHEEL_FL_PWM,
                                          MECANUM_PWM_CHANGE_LIMIT_PER_MS,
-                                         MECANUM_PWM_CHANGE_LIMIT_PER_LOOP);
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_LOOP,
+                                         MECANUM_PWM_MIN_SPEED);
 hardware::MotorLimited hardware::wheelFR(PIN_WHEEL_FR_INA, PIN_WHEEL_FR_INB,
                                          PIN_WHEEL_FR_PWM,
                                          MECANUM_PWM_CHANGE_LIMIT_PER_MS,
-                                         MECANUM_PWM_CHANGE_LIMIT_PER_LOOP);
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_LOOP,
+                                         MECANUM_PWM_MIN_SPEED);
 hardware::MotorLimited hardware::wheelBL(PIN_WHEEL_BL_INA, PIN_WHEEL_BL_INB,
                                          PIN_WHEEL_BL_PWM,
                                          MECANUM_PWM_CHANGE_LIMIT_PER_MS,
-                                         MECANUM_PWM_CHANGE_LIMIT_PER_LOOP);
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_LOOP,
+                                         MECANUM_PWM_MIN_SPEED);
 hardware::MotorLimited hardware::wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB,
                                          PIN_WHEEL_BR_PWM,
                                          MECANUM_PWM_CHANGE_LIMIT_PER_MS,
-                                         MECANUM_PWM_CHANGE_LIMIT_PER_LOOP);
+                                         MECANUM_PWM_CHANGE_LIMIT_PER_LOOP,
+                                         MECANUM_PWM_MIN_SPEED);
 hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
 bool hardware::isHardwareLoopUpdating = true;

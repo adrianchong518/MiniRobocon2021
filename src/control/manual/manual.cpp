@@ -20,14 +20,16 @@ void mapJoystick() {
   if (hardware::controller::joystickXVal >
       CONTROLLER_JOYSTICK_X_MID + CONTROLLER_DEADZONE) {
     normalizedX = -(double)((int32_t)hardware::controller::joystickXVal -
-                            CONTROLLER_JOYSTICK_X_MID) /
-                  (CONTROLLER_JOYSTICK_X_MAX - CONTROLLER_JOYSTICK_X_MID);
+                            CONTROLLER_JOYSTICK_X_MID - CONTROLLER_DEADZONE) /
+                  (CONTROLLER_JOYSTICK_X_MAX - CONTROLLER_JOYSTICK_X_MID -
+                   CONTROLLER_DEADZONE);
     normalizedX = constrain(normalizedX, -1, 1);
   } else if (hardware::controller::joystickXVal <
              CONTROLLER_JOYSTICK_X_MID - CONTROLLER_DEADZONE) {
     normalizedX = -(double)((int32_t)hardware::controller::joystickXVal -
-                            CONTROLLER_JOYSTICK_X_MID) /
-                  (CONTROLLER_JOYSTICK_X_MID - CONTROLLER_JOYSTICK_X_MIN);
+                            CONTROLLER_JOYSTICK_X_MID + CONTROLLER_DEADZONE) /
+                  (CONTROLLER_JOYSTICK_X_MID - CONTROLLER_JOYSTICK_X_MIN -
+                   CONTROLLER_DEADZONE);
     normalizedX = constrain(normalizedX, -1, 1);
   } else {
     normalizedX = 0;
@@ -37,14 +39,16 @@ void mapJoystick() {
   if (hardware::controller::joystickYVal >
       CONTROLLER_JOYSTICK_Y_MID + CONTROLLER_DEADZONE) {
     normalizedY = (double)((int32_t)hardware::controller::joystickYVal -
-                           CONTROLLER_JOYSTICK_Y_MID) /
-                  (CONTROLLER_JOYSTICK_Y_MAX - CONTROLLER_JOYSTICK_Y_MID);
+                           CONTROLLER_JOYSTICK_Y_MID - CONTROLLER_DEADZONE) /
+                  (CONTROLLER_JOYSTICK_Y_MAX - CONTROLLER_JOYSTICK_Y_MID -
+                   CONTROLLER_DEADZONE);
     normalizedY = constrain(normalizedY, -1, 1);
   } else if (hardware::controller::joystickYVal <
              CONTROLLER_JOYSTICK_Y_MID - CONTROLLER_DEADZONE) {
     normalizedY = (double)((int32_t)hardware::controller::joystickYVal -
-                           CONTROLLER_JOYSTICK_Y_MID) /
-                  (CONTROLLER_JOYSTICK_Y_MID - CONTROLLER_JOYSTICK_Y_MIN);
+                           CONTROLLER_JOYSTICK_Y_MID + CONTROLLER_DEADZONE) /
+                  (CONTROLLER_JOYSTICK_Y_MID - CONTROLLER_JOYSTICK_Y_MIN -
+                   CONTROLLER_DEADZONE);
     normalizedY = constrain(normalizedY, -1, 1);
   } else {
     normalizedY = 0;
@@ -56,16 +60,21 @@ void mapJoystick() {
       FAST_TRIG_UINT_TO_RAD;
   control::manual::joystickMappedSpeed =
       fmax(fabs(normalizedX), fabs(normalizedY));
+
+  Serial.println(String(normalizedX) + " " + String(normalizedY) + " " +
+                 String(control::manual::joystickHeading) + " " +
+                 String(control::manual::joystickMappedSpeed));
 }
 
 void mapTurn() {
   int16_t mappedTurnLeftVal;
   if (hardware::controller::turnLeftVal <
       CONTROLLER_TURN_LEFT_MAX - CONTROLLER_DEADZONE) {
-    mappedTurnLeftVal = -(CONTROLLER_TURN_LEFT_MAX -
+    mappedTurnLeftVal = -(CONTROLLER_TURN_LEFT_MAX - CONTROLLER_DEADZONE -
                           (int32_t)hardware::controller::turnLeftVal) *
                         (-MECANUM_ROT_DIFF_MIN) /
-                        (CONTROLLER_TURN_LEFT_MAX - CONTROLLER_TURN_LEFT_MIN);
+                        (CONTROLLER_TURN_LEFT_MAX - CONTROLLER_TURN_LEFT_MIN -
+                         CONTROLLER_DEADZONE);
     mappedTurnLeftVal = constrain(mappedTurnLeftVal, MECANUM_ROT_DIFF_MIN, 0);
   } else {
     mappedTurnLeftVal = 0;
@@ -74,11 +83,11 @@ void mapTurn() {
   int16_t mappedTurnRightVal;
   if (hardware::controller::turnRightVal <
       CONTROLLER_TURN_RIGHT_MAX - CONTROLLER_DEADZONE) {
-    mappedTurnRightVal =
-        (CONTROLLER_TURN_RIGHT_MAX -
-         (int32_t)hardware::controller::turnRightVal) *
-        MECANUM_ROT_DIFF_MAX /
-        (CONTROLLER_TURN_RIGHT_MAX - CONTROLLER_TURN_RIGHT_MIN);
+    mappedTurnRightVal = (CONTROLLER_TURN_RIGHT_MAX - CONTROLLER_DEADZONE -
+                          (int32_t)hardware::controller::turnRightVal) *
+                         MECANUM_ROT_DIFF_MAX /
+                         (CONTROLLER_TURN_RIGHT_MAX -
+                          CONTROLLER_TURN_RIGHT_MIN - CONTROLLER_DEADZONE);
     mappedTurnRightVal = constrain(mappedTurnRightVal, 0, MECANUM_ROT_DIFF_MAX);
   } else {
     mappedTurnRightVal = 0;

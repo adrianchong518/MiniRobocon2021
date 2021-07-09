@@ -6,12 +6,14 @@ hardware::MotorLimited::MotorLimited(const uint8_t pin_inA,
                                      const uint8_t pin_inB,
                                      const uint8_t pin_PWM,
                                      const uint8_t pwmChangeLimitPerMs,
-                                     const uint8_t pwmChangeLimitPerLoop)
+                                     const uint8_t pwmChangeLimitPerLoop,
+                                     const uint8_t pwmMinSpeed)
     : m_pin_inA(pin_inA),
       m_pin_inB(pin_inB),
       m_pin_PWM(pin_PWM),
       m_pwmChangeLimitPerMs(pwmChangeLimitPerMs),
-      m_pwmChangeLimitPerLoop(pwmChangeLimitPerLoop) {
+      m_pwmChangeLimitPerLoop(pwmChangeLimitPerLoop),
+      m_pwmMinSpeed(pwmMinSpeed) {
   setSpeed(0);
 }
 
@@ -36,11 +38,11 @@ int16_t hardware::MotorLimited::getSpeedTarget() const { return m_speedTarget; }
 void hardware::MotorLimited::setSpeed(const int16_t speed) {
   m_speed = constrain(speed, -255, 255);
 
-  if (m_speed > 0) {
+  if (m_speed > m_pwmMinSpeed) {
     digitalWrite(m_pin_inA, LOW);
     digitalWrite(m_pin_inB, HIGH);
     analogWrite(m_pin_PWM, m_speed);
-  } else if (m_speed < 0) {
+  } else if (m_speed < -m_pwmMinSpeed) {
     digitalWrite(m_pin_inA, HIGH);
     digitalWrite(m_pin_inB, LOW);
     analogWrite(m_pin_PWM, -m_speed);
