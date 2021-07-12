@@ -163,13 +163,16 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("M");
   } else {
+    auto handler = [](uint8_t buttonIndex, bool state) {
+      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
+               String(state ? "Released" : "Pressed"));
+    };
+
     for (int i = 0; i < 3; i++) {
-      hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
-                                                       bool state) {
-        LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
-                 String(state ? "Released" : "Pressed"));
-      };
+      hardware::controller::buttonsHandlers[i][0] = handler;
     }
+    hardware::controller::buttonsHandlers[6][0] = handler;
+    hardware::controller::buttonsHandlers[7][0] = handler;
 
 #if LCD_DEBUG_ENABLED == 1
     hardware::interface::lcd.setCursor(0, 0);
@@ -188,16 +191,27 @@ void control::manual::setButtonsHandlers() {
       case Zone::RED:
         hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
                                                          bool) {
-          hardware::servos::setRightState(buttonIndex);
+          hardware::servos::setLeftState(buttonIndex);
         };
         break;
 
       case Zone::BLUE:
         hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
                                                          bool) {
-          hardware::servos::setLeftState(buttonIndex);
+          hardware::servos::setRightState(buttonIndex);
         };
         break;
     }
   }
+
+  hardware::controller::buttonsHandlers[6][0] = [](uint8_t, bool) {
+    hardware::ballHitter.hitStartPos(
+        BALL_HITTER_HOLD_DEG, BALL_HITTER_START_DEG, BALL_HITTER_MID_DEG,
+        BALL_HITTER_END_DEG, BALL_HITTER_HOLD_TO_START_SPEED, BALL_HITTER_SPEED,
+        BALL_HITTER_MID_SPEED);
+  };
+
+  hardware::controller::buttonsHandlers[7][0] = [](uint8_t, bool) {
+    hardware::ballHitter.hit(hardware::encoders::ballHitterEncoderCount);
+  };
 }

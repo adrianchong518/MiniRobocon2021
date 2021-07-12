@@ -56,6 +56,9 @@ class BallHitter : public PID {
   PID::CODES setTarget(const uint16_t target);
   PID::CODES setTargetDeg(const double degree);
 
+  int16_t getMotorSpeed() const;
+  void setMotorSpeed(const int16_t speed);
+
   void setIsPIDEnabled(const bool isPIDEnabled);
 
  protected:

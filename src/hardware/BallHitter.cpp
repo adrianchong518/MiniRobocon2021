@@ -42,7 +42,7 @@ void hardware::BallHitter::loop(const int32_t reading) {
       if ((m_hitHoldToStartSpeed < 0 && reading <= m_hitStageTarget) ||
           (m_hitHoldToStartSpeed > 0 && reading >= m_hitStageTarget)) {
         // Start Pos to Mid Pos at hitSpeed
-        m_hitStageTarget = reading + m_hitDistStartToMid;
+        m_hitStageTarget = m_hitMidPos;
         motorSpeed = m_hitSpeed;
 
         m_hitStage = 4;
@@ -54,7 +54,7 @@ void hardware::BallHitter::loop(const int32_t reading) {
       if ((m_hitSpeed < 0 && reading <= m_hitStageTarget) ||
           (m_hitSpeed > 0 && reading >= m_hitStageTarget)) {
         // Mid Pos to End Pos at hitMidSpeed
-        m_hitStageTarget = reading + m_hitDistMidToEnd;
+        m_hitStageTarget = m_hitEndPos;
         motorSpeed = m_hitMidSpeed;
 
         m_hitStage = 5;
@@ -67,7 +67,8 @@ void hardware::BallHitter::loop(const int32_t reading) {
           (m_hitMidSpeed > 0 && reading >= m_hitStageTarget)) {
         // Start timer
         motorSpeed = 0;
-        m_hitCompleteTimer = millis() + 2000;
+        setMotorSpeed(motorSpeed);
+        m_hitCompleteTimer = millis() + 500;
 
         m_hitStage = 6;
         LOG_DEBUG("<Ball Hitter>\tEnter Hit Stage\t6");
@@ -89,7 +90,7 @@ void hardware::BallHitter::loop(const int32_t reading) {
       break;
   }
 
-  m_motor->setSpeed(motorSpeed);
+  setMotorSpeed(motorSpeed);
 }
 
 void hardware::BallHitter::home() {}
@@ -97,9 +98,9 @@ void hardware::BallHitter::home() {}
 void hardware::BallHitter::hit(const int32_t reading) {
   if (m_isReadyToHit) {
     // Hold Pos to Start Pos at hitHoldToStartSpeed
-    m_hitStageTarget = reading + m_hitDistHoldToStart;
+    m_hitStageTarget = m_hitStartPos;
     setIsPIDEnabled(false);
-    m_motor->setSpeed(m_hitHoldToStartSpeed);
+    setMotorSpeed(m_hitHoldToStartSpeed);
 
     m_isReadyToHit = false;
     m_hitStage = 3;
@@ -113,7 +114,6 @@ void hardware::BallHitter::hitStartPos(const double holdDeg,
                                        const int16_t holdToStartSpeed,
                                        const int16_t speed,
                                        const int16_t midSpeed) {
-  uint64_t time = millis();
   m_hitHoldPos = holdDeg / 360 * m_PPR;
   while (m_hitHoldPos >= (int32_t)m_PPR) {
     m_hitHoldPos -= m_PPR;
@@ -145,7 +145,6 @@ void hardware::BallHitter::hitStartPos(const double holdDeg,
   while (m_hitEndPos < 0) {
     m_hitEndPos += m_PPR;
   }
-  Serial.println((unsigned long)(millis() - time));
 
   m_hitHoldToStartSpeed = holdToStartSpeed;
   m_hitSpeed = speed;
@@ -179,7 +178,7 @@ void hardware::BallHitter::hitStartPos(const double holdDeg,
   setTarget(m_hitHoldPos);
   m_isReadyToHit = false;
   m_hitStage = 1;
-  Serial.println(1);
+  LOG_DEBUG("<Ball Hitter>\tEnter Hit Stage\t1");
 }
 
 PID::CODES hardware::BallHitter::setTarget(const uint16_t target) {
@@ -190,11 +189,22 @@ PID::CODES hardware::BallHitter::setTargetDeg(const double degree) {
   return setTarget(degree / 360 * m_PPR);
 }
 
+int16_t hardware::BallHitter::getMotorSpeed() const {
+  return m_motor->getSpeed();
+}
+
+void hardware::BallHitter::setMotorSpeed(const int16_t speed) {
+  m_prevMotorSpeed = speed;
+  m_motor->setSpeed(speed);
+}
+
 void hardware::BallHitter::setIsPIDEnabled(const bool isPIDEnabled) {
   if (m_isPIDEnabled != isPIDEnabled) {
     m_cumError = 0;
   }
   m_isPIDEnabled = isPIDEnabled;
+  LOG_DEBUG("<Ball Hitter>\tPID " +
+            String(isPIDEnabled ? "Enabled" : "Disabled"));
 }
 
 double hardware::BallHitter::calculateError(const double reading) {

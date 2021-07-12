@@ -46,10 +46,10 @@ ISR(PCINT1_vect) {
   hardware::encoders::encoderYPrevPhase = PHASE;
 }
 
-ISR(PCINT2_vect) {
+ISR(PCINT0_vect) {
   const uint8_t PINB_TEMP = PINB;
   const uint8_t PHASE = PINB_TEMP & 0b11;
-  hardware::encoders::ballHitterEncoderCount += hardware::encoders::PHASE_COMP
+  hardware::encoders::ballHitterEncoderCount -= hardware::encoders::PHASE_COMP
       [PHASE][hardware::encoders::ballHitterEncoderPrevPhase];
 
   if (!hardware::encoders::PHASE_COMP
@@ -60,7 +60,7 @@ ISR(PCINT2_vect) {
   if (hardware::encoders::ballHitterEncoderIsHoming && PINB_TEMP >> 2 & 0b1) {
     cli();
     hardware::encoders::clearBallHitterEncoder();
-    PCMSK2 = 0b00000011;
+    PCMSK0 = 0b00000011;
     sei();
   }
 
