@@ -148,20 +148,20 @@ void hardware::Mecanum::setMotorsSpeeds() {
   const double x1 = x0 * mapScalingFactor;
   const double y1 = y0 * mapScalingFactor;
 
-  m_wheelFL->setSpeedTarget(-(x1 + halfRotationSpeedDiff));
-  m_wheelFR->setSpeedTarget((y1 - halfRotationSpeedDiff));
-  m_wheelBL->setSpeedTarget(-(y1 + halfRotationSpeedDiff));
-  m_wheelBR->setSpeedTarget((x1 - halfRotationSpeedDiff));
+  m_wheelFL->setSpeed(-(x1 + halfRotationSpeedDiff));
+  m_wheelFR->setSpeed((y1 - halfRotationSpeedDiff));
+  m_wheelBL->setSpeed(-(y1 + halfRotationSpeedDiff));
+  m_wheelBR->setSpeed((x1 - halfRotationSpeedDiff));
 }
 
 void hardware::Mecanum::setMotorsSpeeds(const int16_t wheelFLSpeed,
                                         const int16_t wheelFRSpeed,
                                         const int16_t wheelBLSpeed,
                                         const int16_t wheelBRSpeed) {
-  m_wheelFL->setSpeedTarget(wheelFLSpeed);
-  m_wheelFR->setSpeedTarget(wheelFRSpeed);
-  m_wheelBL->setSpeedTarget(wheelBLSpeed);
-  m_wheelBR->setSpeedTarget(wheelBRSpeed);
+  m_wheelFL->setSpeed(wheelFLSpeed);
+  m_wheelFR->setSpeed(wheelFRSpeed);
+  m_wheelBL->setSpeed(wheelBLSpeed);
+  m_wheelBR->setSpeed(wheelBRSpeed);
 }
 
 bool hardware::Mecanum::isEnabled() const { return m_isEnabled; }

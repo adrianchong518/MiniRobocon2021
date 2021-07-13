@@ -12,6 +12,7 @@ control::Zone control::zone;
 
 void control::init() {
   LOG_INFO("<Control>\tInit Start...");
+#if NO_CONTROLLER != 1
   hardware::interface::lcd.setCursor(1, 3);
   hardware::interface::lcd.print("Control Init ");
 
@@ -25,6 +26,11 @@ void control::init() {
   }
 
   manual::init();
+#else
+  manual::setIsManualEnabled(false);
+  automatic::setIsAutomaticEnabled(true);
+#endif
+
   automatic::init();
   LOG_INFO("<Control>\tInit Done");
 }
@@ -58,6 +64,7 @@ void control::loop() {
     }
   }
 
+#if NO_CONTROLLER != 1
   hardware::interface::lcd.setCursor(16, 3);
   if (manual::isManualEnabled != hardware::controller::switch3State) {
     manual::setIsManualEnabled(hardware::controller::switch3State);
@@ -90,5 +97,7 @@ void control::loop() {
   }
 
   manual::loop();
+#endif
+
   automatic::loop();
 }

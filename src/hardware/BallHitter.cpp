@@ -91,6 +91,15 @@ void hardware::BallHitter::loop(const int32_t reading) {
   }
 
   setMotorSpeed(motorSpeed);
+
+  // Serial.print(m_motor->getSpeed());
+  // Serial.print(" ");
+  // Serial.print(reading);
+  // Serial.print(" ");
+  // Serial.print(m_target);
+  // Serial.print(" ");
+  // Serial.print(m_hitStageTarget);
+  // Serial.println();
 }
 
 void hardware::BallHitter::home() {}
