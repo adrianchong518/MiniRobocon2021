@@ -152,6 +152,8 @@ int ballHitterCommands(const String &command) {
                                      motorHoldToStartSpeed, motorSpeed,
                                      motorMidSpeed);
     LOG_DEBUG("<Ball Hitter>\tSetting Hold Position");
+  } else if (command.startsWith("tsd ")) {
+    hardware::ballHitter.setTargetDeg(command.substring(4).toDouble());
   } else if (command == "hit") {
     hardware::ballHitter.hit(hardware::encoders::ballHitterEncoderCount);
     LOG_DEBUG("<Ball Hitter>\tHit!");

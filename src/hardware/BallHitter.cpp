@@ -42,7 +42,7 @@ void hardware::BallHitter::loop(const int32_t reading) {
       if ((m_hitHoldToStartSpeed < 0 && reading <= m_hitStageTarget) ||
           (m_hitHoldToStartSpeed > 0 && reading >= m_hitStageTarget)) {
         // Start Pos to Mid Pos at hitSpeed
-        m_hitStageTarget = m_hitMidPos;
+        m_hitStageTarget = reading + m_hitDistStartToMid;
         motorSpeed = m_hitSpeed;
 
         m_hitStage = 4;
@@ -54,7 +54,7 @@ void hardware::BallHitter::loop(const int32_t reading) {
       if ((m_hitSpeed < 0 && reading <= m_hitStageTarget) ||
           (m_hitSpeed > 0 && reading >= m_hitStageTarget)) {
         // Mid Pos to End Pos at hitMidSpeed
-        m_hitStageTarget = m_hitEndPos;
+        m_hitStageTarget = reading + m_hitDistMidToEnd;
         motorSpeed = m_hitMidSpeed;
 
         m_hitStage = 5;
@@ -107,7 +107,7 @@ void hardware::BallHitter::home() {}
 void hardware::BallHitter::hit(const int32_t reading) {
   if (m_isReadyToHit) {
     // Hold Pos to Start Pos at hitHoldToStartSpeed
-    m_hitStageTarget = m_hitStartPos;
+    m_hitStageTarget = reading + m_hitHoldToStartSpeed;
     setIsPIDEnabled(false);
     setMotorSpeed(m_hitHoldToStartSpeed);
 
@@ -191,10 +191,12 @@ void hardware::BallHitter::hitStartPos(const double holdDeg,
 }
 
 PID::CODES hardware::BallHitter::setTarget(const uint16_t target) {
+  m_hitStage = 0;
   return PID::setTarget(target % m_PPR);
 }
 
 PID::CODES hardware::BallHitter::setTargetDeg(const double degree) {
+  LOG_DEBUG("<Ball Hitter>\tTarget Set To " + String(degree) + " deg");
   return setTarget(degree / 360 * m_PPR);
 }
 
