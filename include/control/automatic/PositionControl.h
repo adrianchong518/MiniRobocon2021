@@ -11,11 +11,10 @@ class PositionControl : public PID {
  public:
   PositionControl();
 
-  void update(int32_t posX, int32_t posY);
+  void update();
   void stop();
 
-  void setTarget(int32_t targetPosX, int32_t m_targetPosY);
-  void setTargetMM(double targetPosXMM, double targetPosYMM);
+  void setTarget(double targetPosX, double targetPosY);
 
   bool isEnabled() const;
   void setIsEnabled(bool isEnabled);
@@ -26,8 +25,8 @@ class PositionControl : public PID {
  private:
   bool m_isEnabled = false;
 
-  int32_t m_targetPosX;
-  int32_t m_targetPosY;
+  double m_targetPosX;
+  double m_targetPosY;
 };
 
 }  // namespace automatic

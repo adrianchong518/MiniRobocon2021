@@ -72,6 +72,8 @@ void hardware::stopAll() {
 
 void hardware::loop() {
   sensors::loop();
+  encoders::loop();
+
   controller::loop();
 
   if (isHardwareLoopUpdating) {

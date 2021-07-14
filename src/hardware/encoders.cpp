@@ -3,15 +3,22 @@
 #include <Arduino.h>
 
 #include "constants.h"
-#include "hardware/interface.h"
+#include "hardware/hardware.h"
+#include "utils/fast_trig.h"
 
 volatile int32_t hardware::encoders::encoderXCount = 0;
 volatile int32_t hardware::encoders::encoderXErrorCount = 0;
 volatile uint8_t hardware::encoders::encoderXPrevPhase;
 
+int32_t hardware::encoders::encoderXPrevCount = 0;
+double hardware::encoders::xPositionMM = 0;
+
 volatile int32_t hardware::encoders::encoderYCount = 0;
 volatile int32_t hardware::encoders::encoderYErrorCount = 0;
 volatile uint8_t hardware::encoders::encoderYPrevPhase;
+
+int32_t hardware::encoders::encoderYPrevCount = 0;
+double hardware::encoders::yPositionMM = 0;
 
 volatile bool hardware::encoders::ballHitterEncoderIsHoming = false;
 volatile int32_t hardware::encoders::ballHitterEncoderCount = 0;
@@ -95,6 +102,24 @@ void hardware::encoders::init() {
   PCMSK2 = 0b00110000;
 
   sei();
+}
+
+void hardware::encoders::loop() {
+  const double xMMDiff =
+      (encoderXCount - encoderXPrevCount) * ENCODER_X_MM_PER_PULSE;
+  encoderXPrevCount = encoderXCount;
+
+  const double yMMDiff =
+      (encoderYCount - encoderYPrevCount) * ENCODER_Y_MM_PER_PULSE;
+  encoderYPrevCount = encoderYCount;
+
+  const uint16_t directionScaled =
+      hardware::mecanum.getRotation() * FAST_TRIG_RAD_TO_UINT;
+  const double sinValue = sin_fast(directionScaled) * FAST_TRIG_UINT_TO_RAD;
+  const double cosValue = cos_fast(directionScaled) * FAST_TRIG_UINT_TO_RAD;
+
+  xPositionMM += xMMDiff * cosValue - yMMDiff * sinValue;
+  yPositionMM += xMMDiff * sinValue + yMMDiff * cosValue;
 }
 
 void hardware::encoders::clearAll() {

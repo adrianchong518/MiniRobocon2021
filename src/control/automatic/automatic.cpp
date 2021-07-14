@@ -15,8 +15,7 @@ void control::automatic::init() {
 void control::automatic::loop() {
   if (isAutomaticEnabled) {
     routines::loop();
-    positionControl.update(hardware::encoders::encoderXCount,
-                           hardware::encoders::encoderYCount);
+    positionControl.update();
   }
 }
 
