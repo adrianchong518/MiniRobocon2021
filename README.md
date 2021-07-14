@@ -7,14 +7,13 @@ The project is coded on VSCode with the extension PlatformIO installed.
 ## Todo
 
 - [x] ~~Implement controller interfaces (switches, LCD)~~
-- [ ] Implement interfaces (NeoPixel) & Refactor
-- [ ] Implement sensors
+- [x] ~~Implement interfaces (NeoPixel) & Refactor~~
+- [x] ~~Implement sensors~~
   - [x] ~~Collision detection~~
   - [x] ~~Encoders (PCINT, INT)~~
   - [x] ~~TF-Mini~~
 - [ ] Implement ball hitting
 - [ ] Implement automatic path following
-- [ ] ? Separate code for Team A and Team B
 
 ## Serial Control Scheme
 
