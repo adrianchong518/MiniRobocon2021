@@ -26,6 +26,8 @@ void hardware::interface::init() {
   lcd.print("[             ] ----");
 #endif
 
+  pinMode(PIN_BUZZER, OUTPUT);
+
   grid.begin();
   grid.show();
 }

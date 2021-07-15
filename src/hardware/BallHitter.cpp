@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 
+#include "constants.h"
 #include "hardware/interface.h"
 
 hardware::BallHitter::BallHitter(Motor* const motor, const bool isPIDEnabled,
@@ -81,6 +82,7 @@ void hardware::BallHitter::loop(const int32_t reading) {
         setIsPIDEnabled(true);
         setTarget(m_hitHoldPos);
 
+        digitalWrite(PIN_BUZZER, LOW);
         m_hitStage = 1;
         LOG_DEBUG("<Ball Hitter>\tEnter Hit Stage\t1");
       }
@@ -112,6 +114,7 @@ void hardware::BallHitter::hit(const int32_t reading) {
     setMotorSpeed(m_hitHoldToStartSpeed);
 
     m_isReadyToHit = false;
+    digitalWrite(PIN_BUZZER, HIGH);
     m_hitStage = 3;
     LOG_DEBUG("<Ball Hitter>\tEnter Hit Stage\t3");
   }
