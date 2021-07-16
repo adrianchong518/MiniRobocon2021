@@ -13,6 +13,7 @@ extern Servo puttingRightLower;
 void init();
 void startingPosition();
 
+void setState(uint8_t state);
 void setLeftState(uint8_t state);
 void setRightState(uint8_t state);
 

@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include "hardware/interface.h"
+#include "control/control.h"
 
 Servo hardware::servos::puttingLeftUpper;
 Servo hardware::servos::puttingLeftLower;
@@ -34,6 +35,18 @@ void hardware::servos::startingPosition() {
   puttingLeftLower.write(PUTTING_LEFT_LOWER_STARTING_POS);
   puttingRightUpper.write(PUTTING_RIGHT_UPPER_STARTING_POS);
   puttingRightLower.write(PUTTING_RIGHT_LOWER_STARTING_POS);
+}
+
+void hardware::servos::setState(uint8_t state) {
+  switch (control::zone) {
+    case control::Zone::RED:
+      setLeftState(state);
+      break;
+
+    case control::Zone::BLUE:
+      setRightState(state);
+      break;
+  }
 }
 
 void hardware::servos::setLeftState(uint8_t state) {

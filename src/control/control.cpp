@@ -79,20 +79,12 @@ void control::loop() {
       zone = Zone::RED;
       hardware::interface::lcd.setCursor(18, 3);
       hardware::interface::lcd.print("R");
-
-      if (manual::isManualEnabled) {
-        manual::setButtonsHandlers();
-      }
     }
   } else {
     if (zone != Zone::BLUE) {
       zone = Zone::BLUE;
       hardware::interface::lcd.setCursor(18, 3);
       hardware::interface::lcd.print("B");
-
-      if (manual::isManualEnabled) {
-        manual::setButtonsHandlers();
-      }
     }
   }
 
