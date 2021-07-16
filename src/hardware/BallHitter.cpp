@@ -117,7 +117,7 @@ void hardware::BallHitter::home() {
   }
 
   setMotorSpeed(0);
-  setTarget(0);
+  setTargetDeg(BALL_HITTER_NORMAL_DEG);
   setIsPIDEnabled(true);
 
   LOG_INFO("<Ball Hitter>\tHoming Done");

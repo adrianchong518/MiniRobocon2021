@@ -170,6 +170,14 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
       hardware::servos::setState(2);
     };
 
+    hardware::controller::buttonsHandlers[2][1] = [](uint8_t, bool) {
+      hardware::servos::setState(1);
+    };
+
+    hardware::controller::buttonsHandlers[5][0] = [](uint8_t, bool) {
+      hardware::ballHitter.setTargetDeg(BALL_HITTER_NORMAL_DEG);
+    };
+
     hardware::controller::buttonsHandlers[6][0] = [](uint8_t, bool) {
       hardware::ballHitter.hitStartPos(
           BALL_HITTER_HOLD_DEG, BALL_HITTER_START_DEG, BALL_HITTER_MID_DEG,
@@ -184,16 +192,18 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("M");
   } else {
-    auto handler = [](uint8_t buttonIndex, bool state) {
-      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
-               String(state ? "Released" : "Pressed"));
-    };
-
-    for (int i = 0; i < 3; i++) {
-      hardware::controller::buttonsHandlers[i][0] = handler;
-    }
-    hardware::controller::buttonsHandlers[6][0] = handler;
-    hardware::controller::buttonsHandlers[7][0] = handler;
+    hardware::controller::buttonsHandlers[0][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[1][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[2][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[5][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[6][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[7][0] =
+        hardware::controller::defaultButtonsHandler;
 
 #if LCD_DEBUG_ENABLED == 1
     hardware::interface::lcd.setCursor(0, 0);

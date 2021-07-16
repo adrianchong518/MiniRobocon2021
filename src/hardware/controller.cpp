@@ -38,13 +38,8 @@ void hardware::controller::init() {
 
   memset(buttonsHandlers, 0, sizeof(buttonsHandlers));
   for (int i = 0; i < 8; i++) {
-    auto handler = [](uint8_t buttonIndex, bool state) {
-      LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
-               String(state ? "Released" : "Pressed"));
-    };
-
-    buttonsHandlers[i][0] = handler;
-    buttonsHandlers[i][1] = handler;
+    buttonsHandlers[i][0] = defaultButtonsHandler;
+    buttonsHandlers[i][1] = defaultButtonsHandler;
     buttonsPrevStateChangeTime[i] = millis();
   }
 
