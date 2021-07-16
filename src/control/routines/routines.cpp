@@ -45,8 +45,8 @@ void control::routines::runRoutine(
   routineList[runningRoutine]->init();
 }
 
-void control::routines::runSeq(const int seqID) {
-  if (seqID < 0 || seqID > 9 || seqList[seqID] == nullptr) {
+void control::routines::runSeq(const size_t seqID) {
+  if (seqID < 0 || seqID >= NUM_SEQ || seqList[seqID] == nullptr) {
     LOG_ERROR("<Routines>\tSequence " + String(seqID) + " Not Valid");
     return;
   }

@@ -12,12 +12,13 @@ The project is coded on VSCode with the extension PlatformIO installed.
   - [x] ~~Collision detection~~
   - [x] ~~Encoders (PCINT, INT)~~
   - [x] ~~TF-Mini~~
-- [ ] Implement ball hitting
+- [x] ~~Implement ball hitting~~
 - [ ] Implement automatic path following
 
 ## Build Environments
 
 **Debug LCD**: Builds with serial and LCD debug outputs
+**Debug No Controller**: Builds version for when no controller is plugged in
 **Debug**: Builds with serial debug output
 **Release**: Builds without all debug outputs
 
@@ -143,6 +144,52 @@ Clear the counts of y encoder
 
 > e cbh
 Clear the counts of ball hitter encoder
+```
+
+### Ball Hitter
+
+```monospace
+> b tsd [degree]
+Set the PID target to [degree]
+
+> b starthit
+Start the hit process, and put the hitter to the hold position
+
+> b hit
+Hit the ball
+
+> b ms [speed]
+Set the speed of the ball hitting motor (-255 ~ 255)
+
+> b startpos [degree]
+Set the starting position when hitting
+
+> b midpos [degree]
+Set the middle position when hitting
+
+> b endpos [degree]
+Set the end position when hitting
+
+> b hms [speed]
+Set the motor speed when hitting (-255 ~ 255)
+
+> b hmms [speed]
+Set the motor middle speed when hitting (-255 ~ 255)
+
+> b kp [value]
+Set the Kp constant of ball hitter
+
+> b ki [value]
+Set the Ki constant of ball hitter
+
+> b kd [value]
+Set the Kd constant of ball hitter
+
+> b pidon
+Enable PID control
+
+> b pidoff
+Disable PID control
 ```
 
 ### Distance Sensors (TFMini-S)

@@ -28,6 +28,9 @@ class MotorLimited {
 
   void setSpeed(const int16_t speed);
   int16_t getSpeed() const;
+
+  void brakeToGnd();
+  void brakeToVcc();
 };
 
 }  // namespace hardware

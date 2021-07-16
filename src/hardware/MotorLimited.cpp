@@ -47,10 +47,24 @@ void hardware::MotorLimited::setSpeed(const int16_t speed) {
     digitalWrite(m_pin_inB, LOW);
     analogWrite(m_pin_PWM, -m_speed);
   } else {
-    digitalWrite(m_pin_inA, HIGH);
+    digitalWrite(m_pin_inA, LOW);
     digitalWrite(m_pin_inB, HIGH);
     analogWrite(m_pin_PWM, 0);
   }
 }
 
 int16_t hardware::MotorLimited::getSpeed() const { return m_speed; }
+
+void hardware::MotorLimited::brakeToGnd() {
+  m_speed = 0;
+  digitalWrite(m_pin_inA, LOW);
+  digitalWrite(m_pin_inB, LOW);
+  analogWrite(m_pin_PWM, 0);
+}
+
+void hardware::MotorLimited::brakeToVcc() {
+  m_speed = 0;
+  digitalWrite(m_pin_inA, HIGH);
+  digitalWrite(m_pin_inB, HIGH);
+  analogWrite(m_pin_PWM, 0);
+}

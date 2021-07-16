@@ -11,6 +11,7 @@ Adafruit_NeoPixel hardware::interface::grid(NEOPIXEL_LED_COUNT,
 void hardware::interface::init() {
   LOG_DEBUG("<Interface>\tInitialising...");
 
+#if NO_CONTROLLER != 1
   int lcdBeginStatus =
       lcd.begin(CONTROLLER_LCD_NUM_COLS, CONTROLLER_LCD_NUM_ROWS);
   if (lcdBeginStatus) {
@@ -23,6 +24,9 @@ void hardware::interface::init() {
 
   lcd.setCursor(0, 3);
   lcd.print("[             ] ----");
+#endif
+
+  pinMode(PIN_BUZZER, OUTPUT);
 
   grid.begin();
   grid.show();

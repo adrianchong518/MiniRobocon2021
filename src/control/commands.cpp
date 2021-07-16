@@ -138,6 +138,68 @@ int encodersCommands(const String &command) {
   return 0;
 }
 
+int ballHitterCommands(const String &command) {
+  static double holdDeg = BALL_HITTER_HOLD_DEG;
+  static double startDeg = BALL_HITTER_START_DEG;
+  static double midDeg = BALL_HITTER_MID_DEG;
+  static double endDeg = BALL_HITTER_END_DEG;
+  static int16_t motorHoldToStartSpeed = BALL_HITTER_HOLD_TO_START_SPEED;
+  static int16_t motorSpeed = BALL_HITTER_SPEED;
+  static int16_t motorMidSpeed = BALL_HITTER_MID_SPEED;
+
+  if (command == "starthit") {
+    hardware::ballHitter.hitStartPos(holdDeg, startDeg, midDeg, endDeg,
+                                     motorHoldToStartSpeed, motorSpeed,
+                                     motorMidSpeed);
+    LOG_DEBUG("<Ball Hitter>\tSetting Hold Position");
+  } else if (command.startsWith("tsd ")) {
+    hardware::ballHitter.setTargetDeg(command.substring(4).toDouble());
+  } else if (command == "hit") {
+    hardware::ballHitter.hit(hardware::encoders::ballHitterEncoderCount);
+    LOG_DEBUG("<Ball Hitter>\tHit!");
+  } else if (command.startsWith("ms ")) {
+    hardware::ballHitter.setIsPIDEnabled(false);
+    hardware::ballHitter.setMotorSpeed(command.substring(3).toInt());
+    LOG_DEBUG("<Ball Hitter>\tMotor Speed Set " +
+              String(hardware::ballHitter.getMotorSpeed()));
+  } else if (command.startsWith("startpos ")) {
+    startDeg = command.substring(9).toDouble();
+    LOG_DEBUG("<Ball Hitter>\tStart Position Degree Set " + String(startDeg));
+  } else if (command.startsWith("midpos ")) {
+    midDeg = command.substring(7).toDouble();
+    LOG_DEBUG("<Ball Hitter>\tMid Position Degree Set " + String(startDeg));
+  } else if (command.startsWith("endpos ")) {
+    endDeg = command.substring(7).toDouble();
+    LOG_DEBUG("<Ball Hitter>\tEnd Position Degree Set " + String(startDeg));
+  } else if (command.startsWith("hms ")) {
+    motorSpeed = command.substring(4).toInt();
+    LOG_DEBUG("<Ball Hitter>\tMotor Speed Set " + String(startDeg));
+  } else if (command.startsWith("hmms ")) {
+    motorMidSpeed = command.substring(5).toInt();
+    LOG_DEBUG("<Ball Hitter>\tMotor Mid Speed Set " + String(startDeg));
+  } else if (command.startsWith("kp ")) {
+    double Kp = command.substring(3).toDouble();
+    hardware::ballHitter.Kp = Kp;
+    LOG_DEBUG("<Ball Hitter>\tPID Kp (" + String(Kp) + ") Set");
+  } else if (command.startsWith("ki ")) {
+    double Ki = command.substring(3).toDouble();
+    hardware::ballHitter.Ki = Ki;
+    LOG_DEBUG("<Ball Hitter>\tPID Ki (" + String(Ki) + ") Set");
+  } else if (command.startsWith("kd ")) {
+    double Kd = command.substring(3).toDouble();
+    hardware::mecanum.Kd = Kd;
+    LOG_DEBUG("<Ball Hitter>\tPID Kd (" + String(Kd) + ") Set");
+  } else if (command == "pidon") {
+    hardware::ballHitter.setIsPIDEnabled(true);
+  } else if (command == "pidoff") {
+    hardware::ballHitter.setIsPIDEnabled(false);
+  } else {
+    return -1;
+  }
+
+  return 0;
+}
+
 int distanceSensorsCommands(const String &command) {
   int sensorIndex;
 
@@ -255,6 +317,8 @@ int control::commands::parseInput(const String &command) {
     return servosCommands(command.substring(2));
   } else if (command.startsWith("e ")) {
     return encodersCommands(command.substring(2));
+  } else if (command.startsWith("b ")) {
+    return ballHitterCommands(command.substring(2));
   } else if (command.startsWith("dist ")) {
     return distanceSensorsCommands(command.substring(5));
   } else if (command.startsWith("manual ")) {

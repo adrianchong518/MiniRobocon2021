@@ -158,18 +158,52 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
     hardware::mecanum.setIsEnabled(true);
     hardware::mecanum.setIsGyroEnabled(hardware::controller::switch2State);
 
-    setButtonsHandlers();
+    hardware::controller::buttonsHandlers[0][0] = [](uint8_t, bool) {
+      hardware::servos::setState(0);
+    };
+
+    hardware::controller::buttonsHandlers[1][0] = [](uint8_t, bool) {
+      hardware::servos::setState(1);
+    };
+
+    hardware::controller::buttonsHandlers[2][0] = [](uint8_t, bool) {
+      hardware::servos::setState(2);
+    };
+
+    hardware::controller::buttonsHandlers[2][1] = [](uint8_t, bool) {
+      hardware::servos::setState(1);
+    };
+
+    hardware::controller::buttonsHandlers[5][0] = [](uint8_t, bool) {
+      hardware::ballHitter.setTargetDeg(BALL_HITTER_NORMAL_DEG);
+    };
+
+    hardware::controller::buttonsHandlers[6][0] = [](uint8_t, bool) {
+      hardware::ballHitter.hitStartPos(
+          BALL_HITTER_HOLD_DEG, BALL_HITTER_START_DEG, BALL_HITTER_MID_DEG,
+          BALL_HITTER_END_DEG, BALL_HITTER_HOLD_TO_START_SPEED,
+          BALL_HITTER_SPEED, BALL_HITTER_MID_SPEED);
+    };
+
+    hardware::controller::buttonsHandlers[7][0] = [](uint8_t, bool) {
+      hardware::ballHitter.hit(hardware::encoders::ballHitterEncoderCount);
+    };
 
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("M");
   } else {
-    for (int i = 0; i < 3; i++) {
-      hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
-                                                       bool state) {
-        LOG_INFO("<Controller>\tButton " + String(buttonIndex) + " " +
-                 String(state ? "Released" : "Pressed"));
-      };
-    }
+    hardware::controller::buttonsHandlers[0][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[1][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[2][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[5][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[6][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[7][0] =
+        hardware::controller::defaultButtonsHandler;
 
 #if LCD_DEBUG_ENABLED == 1
     hardware::interface::lcd.setCursor(0, 0);
@@ -180,24 +214,4 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
   }
 
   LOG_INFO("<Manual>\t" + String(isManualEnabled ? "Enabled" : "Disabled"));
-}
-
-void control::manual::setButtonsHandlers() {
-  for (int i = 0; i < 3; i++) {
-    switch (zone) {
-      case Zone::RED:
-        hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
-                                                         bool) {
-          hardware::servos::setRightState(buttonIndex);
-        };
-        break;
-
-      case Zone::BLUE:
-        hardware::controller::buttonsHandlers[i][0] = [](uint8_t buttonIndex,
-                                                         bool) {
-          hardware::servos::setLeftState(buttonIndex);
-        };
-        break;
-    }
-  }
 }
