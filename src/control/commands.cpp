@@ -200,9 +200,13 @@ int automaticCommands(const String &command) {
 
 int positionControlCommands(const String &command) {
   if (command.startsWith("set ")) {
-    double posXMM = command.substring(command.indexOf(' ', 4)).toDouble();
-    double posYMM = command.substring(4, command.indexOf(' ', 4)).toDouble();
-    control::automatic::positionControl.setTargetMM(posXMM, posYMM);
+    double posXMM = command.substring(4, command.indexOf(' ', 4)).toDouble();
+    double posYMM = command.substring(command.indexOf(' ', 4)).toDouble();
+    control::automatic::positionControl.setTarget(posXMM, posYMM);
+  } else if (command == "read") {
+    LOG_INFO("<Position Control>\t(x,y): (" +
+             String(hardware::encoders::xPositionMM) + "," +
+             String(hardware::encoders::yPositionMM) + ")");
   } else if (command.startsWith("kp ")) {
     double Kp = command.substring(3).toDouble();
     control::automatic::positionControl.Kp = Kp;
