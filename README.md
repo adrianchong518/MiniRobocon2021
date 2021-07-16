@@ -164,7 +164,32 @@ Set the speed of the ball hitting motor (-255 ~ 255)
 > b startpos [degree]
 Set the starting position when hitting
 
-> b midpos
+> b midpos [degree]
+Set the middle position when hitting
+
+> b endpos [degree]
+Set the end position when hitting
+
+> b hms [speed]
+Set the motor speed when hitting (-255 ~ 255)
+
+> b hmms [speed]
+Set the motor middle speed when hitting (-255 ~ 255)
+
+> b kp [value]
+Set the Kp constant of ball hitter
+
+> b ki [value]
+Set the Ki constant of ball hitter
+
+> b kd [value]
+Set the Kd constant of ball hitter
+
+> b pidon
+Enable PID control
+
+> b pidoff
+Disable PID control
 ```
 
 ### Distance Sensors (TFMini-S)
