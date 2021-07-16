@@ -73,7 +73,7 @@ void hardware::startingPosition() {
 
   servos::startingPosition();
   encoders::clearAll();
-  // TODO ballHitter.home();
+  ballHitter.home();
 
   LOG_INFO("<Hardware>\tHoming Complete");
 }

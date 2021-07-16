@@ -177,6 +177,18 @@ int ballHitterCommands(const String &command) {
   } else if (command.startsWith("hmms ")) {
     motorMidSpeed = command.substring(5).toInt();
     LOG_DEBUG("<Ball Hitter>\tMotor Mid Speed Set " + String(startDeg));
+  } else if (command.startsWith("kp ")) {
+    double Kp = command.substring(3).toDouble();
+    hardware::ballHitter.Kp = Kp;
+    LOG_DEBUG("<Ball Hitter>\tPID Kp (" + String(Kp) + ") Set");
+  } else if (command.startsWith("ki ")) {
+    double Ki = command.substring(3).toDouble();
+    hardware::ballHitter.Ki = Ki;
+    LOG_DEBUG("<Ball Hitter>\tPID Ki (" + String(Ki) + ") Set");
+  } else if (command.startsWith("kd ")) {
+    double Kd = command.substring(3).toDouble();
+    hardware::mecanum.Kd = Kd;
+    LOG_DEBUG("<Ball Hitter>\tPID Kd (" + String(Kd) + ") Set");
   } else if (command == "pidon") {
     hardware::ballHitter.setIsPIDEnabled(true);
   } else if (command == "pidoff") {

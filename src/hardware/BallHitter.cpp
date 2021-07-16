@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include "constants.h"
+#include "hardware/encoders.h"
 #include "hardware/interface.h"
 
 hardware::BallHitter::BallHitter(Motor* const motor, const bool isPIDEnabled,
@@ -104,7 +105,23 @@ void hardware::BallHitter::loop(const int32_t reading) {
   // Serial.println();
 }
 
-void hardware::BallHitter::home() {}
+void hardware::BallHitter::home() {
+  LOG_INFO("<Ball Hitter>\tStart Homing");
+
+  hardware::encoders::startBallHitterEncoderHome();
+
+  setIsPIDEnabled(false);
+  setMotorSpeed(BALL_HITTER_HOME_SPEED);
+
+  while (hardware::encoders::ballHitterEncoderIsHoming) {
+  }
+
+  setMotorSpeed(0);
+  setTarget(0);
+  setIsPIDEnabled(true);
+
+  LOG_INFO("<Ball Hitter>\tHoming Done");
+}
 
 void hardware::BallHitter::hit(const int32_t reading) {
   if (m_isReadyToHit) {

@@ -59,7 +59,8 @@ ISR(PCINT0_vect) {
 
   if (hardware::encoders::ballHitterEncoderIsHoming && PINB_TEMP >> 2 & 0b1) {
     cli();
-    hardware::encoders::clearBallHitterEncoder();
+    hardware::encoders::ballHitterEncoderCount = BALL_HITTER_HOME_OFFSET;
+    hardware::encoders::ballHitterEncoderIsHoming = false;
     PCMSK0 = 0b00000011;
     sei();
   }
