@@ -12,6 +12,8 @@
 
 namespace hardware {
 
+extern bool isI2CEnabled;
+
 extern MotorLimited wheelFL;
 extern MotorLimited wheelFR;
 extern MotorLimited wheelBL;

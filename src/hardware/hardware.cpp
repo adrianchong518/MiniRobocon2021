@@ -3,6 +3,8 @@
 #include "constants.h"
 #include "utils/time.h"
 
+bool hardware::isI2CEnabled = true;
+
 hardware::MotorLimited hardware::wheelFL(PIN_WHEEL_FL_INA, PIN_WHEEL_FL_INB,
                                          PIN_WHEEL_FL_PWM,
                                          MECANUM_PWM_CHANGE_LIMIT_PER_MS,
@@ -37,8 +39,15 @@ bool hardware::isHardwareLoopUpdating = true;
 void hardware::init() {
   LOG_INFO("<Hardware>\tInit Start...");
 
-#if NO_CONTROLLER != 1
+  pinMode(PIN_CONTROLLER_SWITCH_0, INPUT_PULLUP);
+  delay(100);
+  isI2CEnabled = digitalRead(PIN_CONTROLLER_SWITCH_0);
+  LOG_INFO(isI2CEnabled ? "<Hardware>\tI2C Enabled"
+                        : "<Hardware>\tI2C Disabled");
+
   interface::init();
+
+#if NO_CONTROLLER != 1
   interface::lcd.setCursor(1, 3);
   interface::lcd.print("    Init     ");
 

@@ -1,6 +1,7 @@
 #include "hardware/sensors/sensors.h"
 
 #include "constants.h"
+#include "hardware/hardware.h"
 #include "hardware/interface.h"
 #include "utils/time.h"
 
@@ -21,8 +22,10 @@ uint8_t hardware::sensors::collisionButtonsState = 0xFF;
 void hardware::sensors::init() {
   LOG_DEBUG("<Sensors>\tInitialising...");
 
-  for (int i = 0; i < 8; i++) {
-    distanceSensors[i].init();
+  if (isI2CEnabled) {
+    for (int i = 0; i < 8; i++) {
+      distanceSensors[i].init();
+    }
   }
 
   PORT_COLLISION_BUTTONS_DDR = 0x00;
@@ -30,14 +33,16 @@ void hardware::sensors::init() {
 }
 
 void hardware::sensors::loop() {
-  if (time::currentTimeMillis - distanceSensorsPrevPollTime >=
-      TFMINIS_POLL_INTERVAL) {
-    for (int i = 0; i < 8; i++) {
-      if (distanceSensors[i].isEnabled()) {
-        distanceSensors[i].readData();
+  if (isI2CEnabled) {
+    if (time::currentTimeMillis - distanceSensorsPrevPollTime >=
+        TFMINIS_POLL_INTERVAL) {
+      for (int i = 0; i < 8; i++) {
+        if (distanceSensors[i].isEnabled()) {
+          distanceSensors[i].readData();
+        }
       }
+      distanceSensorsPrevPollTime = time::currentTimeMillis;
     }
-    distanceSensorsPrevPollTime = time::currentTimeMillis;
   }
 
   collisionButtonsState = PORT_COLLISION_BUTTONS_PIN;

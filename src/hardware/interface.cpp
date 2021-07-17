@@ -1,6 +1,7 @@
 #include "hardware/interface.h"
 
 #include "constants.h"
+#include "hardware/hardware.h"
 
 hd44780_I2Cexp hardware::interface::lcd;
 
@@ -12,18 +13,20 @@ void hardware::interface::init() {
   LOG_DEBUG("<Interface>\tInitialising...");
 
 #if NO_CONTROLLER != 1
-  int lcdBeginStatus =
-      lcd.begin(CONTROLLER_LCD_NUM_COLS, CONTROLLER_LCD_NUM_ROWS);
-  if (lcdBeginStatus) {
-    hd44780::fatalError(lcdBeginStatus);
+  if (isI2CEnabled) {
+    int lcdBeginStatus =
+        lcd.begin(CONTROLLER_LCD_NUM_COLS, CONTROLLER_LCD_NUM_ROWS);
+    if (lcdBeginStatus) {
+      hd44780::fatalError(lcdBeginStatus);
+    }
+    lcd.clear();
+
+    lcd.setCursor(0, 2);
+    lcd.print("--:--");
+
+    lcd.setCursor(0, 3);
+    lcd.print("[             ] ----");
   }
-  lcd.clear();
-
-  lcd.setCursor(0, 2);
-  lcd.print("--:--");
-
-  lcd.setCursor(0, 3);
-  lcd.print("[             ] ----");
 #endif
 
   pinMode(PIN_BUZZER, OUTPUT);
