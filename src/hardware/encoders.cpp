@@ -114,10 +114,13 @@ void hardware::encoders::loop() {
       (encoderYCount - encoderYPrevCount) * ENCODER_Y_MM_PER_PULSE;
   encoderYPrevCount = encoderYCount;
 
-  const uint16_t directionScaled =
-      hardware::mecanum.getRotation() * FAST_TRIG_RAD_TO_UINT;
-  const double sinValue = sin_fast(directionScaled) * FAST_TRIG_UINT_TO_RAD;
-  const double cosValue = cos_fast(directionScaled) * FAST_TRIG_UINT_TO_RAD;
+  // const uint16_t directionScaled =
+  //     hardware::mecanum.getRotation() * FAST_TRIG_RAD_TO_UINT;
+  // const double sinValue = sin_fast(directionScaled) * FAST_TRIG_UINT_TO_RAD;
+  // const double cosValue = cos_fast(directionScaled) * FAST_TRIG_UINT_TO_RAD;
+
+  const double sinValue = sin(hardware::mecanum.getRotation());
+  const double cosValue = cos(hardware::mecanum.getRotation());
 
   xPositionMM += xMMDiff * cosValue - yMMDiff * sinValue;
   yPositionMM += xMMDiff * sinValue + yMMDiff * cosValue;
@@ -132,12 +135,22 @@ void hardware::encoders::clearAll() {
 
 void hardware::encoders::clearEncoderX() {
   encoderXCount = 0;
+  encoderXPrevCount = 0;
   LOG_DEBUG("<Encoders>\tX Cleared");
 }
 
 void hardware::encoders::clearEncoderY() {
   encoderYCount = 0;
+  encoderYPrevCount = 0;
   LOG_DEBUG("<Encoders>\tY Cleared");
+}
+
+void hardware::encoders::clearEncoderXY() {
+  clearEncoderX();
+  clearEncoderY();
+
+  xPositionMM = 0;
+  yPositionMM = 0;
 }
 
 void hardware::encoders::clearBallHitterEncoder() {

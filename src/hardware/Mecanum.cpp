@@ -105,7 +105,7 @@ void hardware::Mecanum::setRotationSpeedDiff(const int16_t rotationSpeedDiff) {
             String(m_rotationSpeedDiff) + ") Set");
 }
 
-double hardware::Mecanum::getRotation() const { return degrees(m_rotation); }
+double hardware::Mecanum::getRotation() const { return m_rotation; }
 
 void hardware::Mecanum::setTarget(double rotationTarget) {
   while (rotationTarget > PI) {

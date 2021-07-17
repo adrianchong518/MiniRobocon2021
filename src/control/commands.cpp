@@ -38,7 +38,8 @@ int mecanumCommands(const String &command) {
              String(wheelFRSpeed) + " | " + String(wheelBLSpeed) + " | " +
              String(wheelBRSpeed));
   } else if (command == "rr") {
-    LOG_INFO("<Mecanum>\tRotation: " + String(hardware::mecanum.getRotation()));
+    LOG_INFO("<Mecanum>\tRotation: " +
+             String(degrees(hardware::mecanum.getRotation())));
   } else if (command == "gt") {
     hardware::mecanum.setIsGyroEnabled(!hardware::mecanum.isGyroEnabled());
   } else if (command == "c") {
@@ -129,6 +130,8 @@ int encodersCommands(const String &command) {
     hardware::encoders::clearEncoderX();
   } else if (command == "cy") {
     hardware::encoders::clearEncoderY();
+  } else if (command == "cxy") {
+    hardware::encoders::clearEncoderXY();
   } else if (command == "cbh") {
     hardware::encoders::clearBallHitterEncoder();
   } else {

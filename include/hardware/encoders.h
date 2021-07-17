@@ -33,6 +33,7 @@ void loop();
 void clearAll();
 void clearEncoderX();
 void clearEncoderY();
+void clearEncoderXY();
 void clearBallHitterEncoder();
 
 void startBallHitterEncoderHome();
