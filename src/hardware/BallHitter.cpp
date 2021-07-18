@@ -3,8 +3,10 @@
 #include <Arduino.h>
 
 #include "constants.h"
+#include "hardware/hardware.h"
 #include "hardware/encoders.h"
 #include "hardware/interface.h"
+#include "control/control.h"
 
 hardware::BallHitter::BallHitter(Motor* const motor, const bool isPIDEnabled,
                                  const double Kp, const double Ki,
@@ -29,8 +31,6 @@ void hardware::BallHitter::loop(const int32_t reading) {
     case 1:
       if (m_isTargetReached) {
         // Enter LIMBO
-        m_isReadyToHit = true;
-
         m_hitStage = 2;
         LOG_DEBUG("<Ball Hitter>\tEnter Hit Stage\t2");
       }
@@ -124,17 +124,15 @@ void hardware::BallHitter::home() {
 }
 
 void hardware::BallHitter::hit(const int32_t reading) {
-  if (m_isReadyToHit) {
-    // Hold Pos to Start Pos at hitHoldToStartSpeed
-    m_hitStageTarget = reading + m_hitHoldToStartSpeed;
-    setIsPIDEnabled(false);
-    setMotorSpeed(m_hitHoldToStartSpeed);
+  // Hold Pos to Start Pos at hitHoldToStartSpeed
+  m_hitStageTarget = reading + m_hitHoldToStartSpeed;
+  setIsPIDEnabled(false);
+  setMotorSpeed(m_hitHoldToStartSpeed);
 
-    m_isReadyToHit = false;
-    digitalWrite(PIN_BUZZER, HIGH);
-    m_hitStage = 3;
-    LOG_DEBUG("<Ball Hitter>\tEnter Hit Stage\t3");
-  }
+  m_isReadyToHit = false;
+  digitalWrite(PIN_BUZZER, HIGH);
+  m_hitStage = 3;
+  LOG_DEBUG("<Ball Hitter>\tEnter Hit Stage\t3");
 }
 
 void hardware::BallHitter::hitStartPos(const double holdDeg,
@@ -237,6 +235,8 @@ void hardware::BallHitter::setIsPIDEnabled(const bool isPIDEnabled) {
   LOG_DEBUG("<Ball Hitter>\tPID " +
             String(isPIDEnabled ? "Enabled" : "Disabled"));
 }
+
+uint8_t hardware::BallHitter::getHitStage() const { return m_hitStage; }
 
 double hardware::BallHitter::calculateError(const double reading) {
   double error = m_target - reading;

@@ -53,11 +53,6 @@ void control::loop() {
         input.remove(input.length() - 1);
         break;
 
-      case 'x':
-        hardware::stopAll();
-        automatic::stop();
-        break;
-
       default:
         input.concat(inChar);
         break;

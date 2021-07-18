@@ -161,22 +161,37 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
     hardware::controller::buttonsHandlers[0][0] = [](uint8_t, bool) {
       hardware::servos::setState(0);
     };
+    hardware::controller::buttonsHandlers[0][1] =
+        hardware::controller::defaultButtonsHandler;
 
     hardware::controller::buttonsHandlers[1][0] = [](uint8_t, bool) {
       hardware::servos::setState(1);
     };
+    hardware::controller::buttonsHandlers[1][1] =
+        hardware::controller::defaultButtonsHandler;
 
     hardware::controller::buttonsHandlers[2][0] = [](uint8_t, bool) {
       hardware::servos::setState(2);
     };
-
     hardware::controller::buttonsHandlers[2][1] = [](uint8_t, bool) {
       hardware::servos::setState(1);
     };
 
+    hardware::controller::buttonsHandlers[3][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[3][1] =
+        hardware::controller::defaultButtonsHandler;
+
+    hardware::controller::buttonsHandlers[4][0] =
+        hardware::controller::defaultButtonsHandler;
+    hardware::controller::buttonsHandlers[4][1] =
+        hardware::controller::defaultButtonsHandler;
+
     hardware::controller::buttonsHandlers[5][0] = [](uint8_t, bool) {
       hardware::ballHitter.setTargetDeg(BALL_HITTER_NORMAL_DEG);
     };
+    hardware::controller::buttonsHandlers[5][1] =
+        hardware::controller::defaultButtonsHandler;
 
     hardware::controller::buttonsHandlers[6][0] = [](uint8_t, bool) {
       hardware::ballHitter.hitStartPos(
@@ -184,27 +199,18 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
           BALL_HITTER_END_DEG, BALL_HITTER_HOLD_TO_START_SPEED,
           BALL_HITTER_SPEED, BALL_HITTER_MID_SPEED);
     };
+    hardware::controller::buttonsHandlers[6][1] =
+        hardware::controller::defaultButtonsHandler;
 
     hardware::controller::buttonsHandlers[7][0] = [](uint8_t, bool) {
       hardware::ballHitter.hit(hardware::encoders::ballHitterEncoderCount);
     };
+    hardware::controller::buttonsHandlers[7][1] =
+        hardware::controller::defaultButtonsHandler;
 
     hardware::interface::lcd.setCursor(16, 3);
     hardware::interface::lcd.print("M");
   } else {
-    hardware::controller::buttonsHandlers[0][0] =
-        hardware::controller::defaultButtonsHandler;
-    hardware::controller::buttonsHandlers[1][0] =
-        hardware::controller::defaultButtonsHandler;
-    hardware::controller::buttonsHandlers[2][0] =
-        hardware::controller::defaultButtonsHandler;
-    hardware::controller::buttonsHandlers[5][0] =
-        hardware::controller::defaultButtonsHandler;
-    hardware::controller::buttonsHandlers[6][0] =
-        hardware::controller::defaultButtonsHandler;
-    hardware::controller::buttonsHandlers[7][0] =
-        hardware::controller::defaultButtonsHandler;
-
 #if LCD_DEBUG_ENABLED == 1
     hardware::interface::lcd.setCursor(0, 0);
     hardware::interface::lcd.print("                    ");

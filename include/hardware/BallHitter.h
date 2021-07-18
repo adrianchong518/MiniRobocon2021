@@ -61,6 +61,8 @@ class BallHitter : public PID {
 
   void setIsPIDEnabled(const bool isPIDEnabled);
 
+  uint8_t getHitStage() const;
+
  protected:
   double calculateError(const double reading);
 };
