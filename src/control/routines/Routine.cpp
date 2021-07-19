@@ -57,7 +57,7 @@ void control::routines::FLMoveWall::init() {
   hardware::sensors::distanceSensors[SENSOR_L2].setIsEnabled(true);
 
   hardware::mecanum.setIsGyroEnabled(true);
-  hardware::mecanum.setSpeed(0.9);
+  hardware::mecanum.setSpeed(1);
   hardware::mecanum.setDirection(-0.52359878);
 }
 
@@ -97,17 +97,17 @@ bool control::routines::FLMoveWall::loop() {
       break;
 
     case 0b01:
-      hardware::mecanum.setSpeed(0.5);
+      hardware::mecanum.setSpeed(1);
       hardware::mecanum.setDirection(-1.3962634);
       break;
 
     case 0b10:
-      hardware::mecanum.setSpeed(0.7);
+      hardware::mecanum.setSpeed(1);
       hardware::mecanum.setDirection(-0.17453293);
       break;
 
     case 0b11:
-      hardware::mecanum.setSpeed(0.4);
+      hardware::mecanum.setSpeed(0.8);
       if (hasCollidedWithFrontWall) {
         hardware::mecanum.setDirection(-1.48352986);
       } else if (hasCollidedWithLeftWall) {
@@ -132,7 +132,7 @@ void control::routines::FRMoveWall::init() {
   hardware::sensors::distanceSensors[SENSOR_R2].setIsEnabled(true);
 
   hardware::mecanum.setIsGyroEnabled(true);
-  hardware::mecanum.setSpeed(0.9);
+  hardware::mecanum.setSpeed(1);
   hardware::mecanum.setDirection(0.52359878);
 }
 
@@ -172,17 +172,17 @@ bool control::routines::FRMoveWall::loop() {
       break;
 
     case 0b01:
-      hardware::mecanum.setSpeed(0.5);
+      hardware::mecanum.setSpeed(1);
       hardware::mecanum.setDirection(1.3962634);
       break;
 
     case 0b10:
-      hardware::mecanum.setSpeed(0.7);
+      hardware::mecanum.setSpeed(1);
       hardware::mecanum.setDirection(0.17453293);
       break;
 
     case 0b11:
-      hardware::mecanum.setSpeed(0.4);
+      hardware::mecanum.setSpeed(0.8);
       if (hasCollidedWithFrontWall) {
         hardware::mecanum.setDirection(1.48352986);
       } else if (hasCollidedWithRightWall) {
@@ -207,7 +207,7 @@ void control::routines::BLMoveWall::init() {
   hardware::sensors::distanceSensors[SENSOR_L2].setIsEnabled(true);
 
   hardware::mecanum.setIsGyroEnabled(true);
-  hardware::mecanum.setSpeed(0.9);
+  hardware::mecanum.setSpeed(1);
   hardware::mecanum.setDirection(-2.61799388);
 }
 
@@ -247,17 +247,17 @@ bool control::routines::BLMoveWall::loop() {
       break;
 
     case 0b01:
-      hardware::mecanum.setSpeed(0.5);
+      hardware::mecanum.setSpeed(1);
       hardware::mecanum.setDirection(-1.74532925);
       break;
 
     case 0b10:
-      hardware::mecanum.setSpeed(0.7);
+      hardware::mecanum.setSpeed(1);
       hardware::mecanum.setDirection(-2.96705973);
       break;
 
     case 0b11:
-      hardware::mecanum.setSpeed(0.4);
+      hardware::mecanum.setSpeed(0.8);
       if (hasCollidedWithBackWall) {
         hardware::mecanum.setDirection(-1.65806279);
       } else if (hasCollidedWithLeftWall) {
@@ -282,7 +282,7 @@ void control::routines::BRMoveWall::init() {
   hardware::sensors::distanceSensors[SENSOR_R2].setIsEnabled(true);
 
   hardware::mecanum.setIsGyroEnabled(true);
-  hardware::mecanum.setSpeed(0.9);
+  hardware::mecanum.setSpeed(1);
   hardware::mecanum.setDirection(2.61799388);
 }
 
@@ -322,17 +322,17 @@ bool control::routines::BRMoveWall::loop() {
       break;
 
     case 0b01:
-      hardware::mecanum.setSpeed(0.5);
+      hardware::mecanum.setSpeed(1);
       hardware::mecanum.setDirection(1.74532925);
       break;
 
     case 0b10:
-      hardware::mecanum.setSpeed(0.7);
+      hardware::mecanum.setSpeed(1);
       hardware::mecanum.setDirection(2.96705973);
       break;
 
     case 0b11:
-      hardware::mecanum.setSpeed(0.4);
+      hardware::mecanum.setSpeed(0.8);
       if (hasCollidedWithBackWall) {
         hardware::mecanum.setDirection(1.65806279);
       } else if (hasCollidedWithRightWall) {
