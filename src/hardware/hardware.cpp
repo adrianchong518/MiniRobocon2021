@@ -27,13 +27,6 @@ hardware::MotorLimited hardware::wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB,
                                          MECANUM_PWM_MIN_SPEED);
 hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
-hardware::Motor hardware::ballHitterMotor(PIN_BALL_HITTER_INA,
-                                          PIN_BALL_HITTER_INB,
-                                          PIN_BALL_HITTER_PWM);
-hardware::BallHitter hardware::ballHitter(
-    &hardware::ballHitterMotor, true, BALL_HITTER_PID_KP, BALL_HITTER_PID_KI,
-    BALL_HITTER_PID_KD, BALL_HITTER_PID_MAX_SPEED, BALL_HITTER_ENCODER_PPR);
-
 bool hardware::isHardwareLoopUpdating = true;
 
 void hardware::init() {
@@ -54,8 +47,6 @@ void hardware::init() {
   controller::init();
 #endif
 
-  sensors::init();
-  encoders::init();
   servos::init();
 
   LOG_INFO("<Hardware>\tInit Complete");
@@ -81,8 +72,6 @@ void hardware::startingPosition() {
 #endif
 
   servos::startingPosition();
-  encoders::clearAll();
-  ballHitter.home();
 
   LOG_INFO("<Hardware>\tHoming Complete");
 }
@@ -96,9 +85,6 @@ void hardware::stopAll() {
 }
 
 void hardware::loop() {
-  sensors::loop();
-  encoders::loop();
-
 #if NO_CONTROLLER != 1
   controller::loop();
 #endif
@@ -109,7 +95,5 @@ void hardware::loop() {
     wheelFR.update();
     wheelBL.update();
     wheelBR.update();
-
-    ballHitter.loop(encoders::ballHitterEncoderCount);
   }
 }

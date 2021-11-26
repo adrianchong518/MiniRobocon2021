@@ -187,24 +187,18 @@ void control::manual::setIsManualEnabled(const bool isManualEnabled) {
     hardware::controller::buttonsHandlers[4][1] =
         hardware::controller::defaultButtonsHandler;
 
-    hardware::controller::buttonsHandlers[5][0] = [](uint8_t, bool) {
-      hardware::ballHitter.setTargetDeg(BALL_HITTER_NORMAL_DEG);
-    };
+    hardware::controller::buttonsHandlers[5][0] =
+        hardware::controller::defaultButtonsHandler;
     hardware::controller::buttonsHandlers[5][1] =
         hardware::controller::defaultButtonsHandler;
 
-    hardware::controller::buttonsHandlers[6][0] = [](uint8_t, bool) {
-      hardware::ballHitter.hitStartPos(
-          BALL_HITTER_HOLD_DEG, BALL_HITTER_START_DEG, BALL_HITTER_MID_DEG,
-          BALL_HITTER_END_DEG, BALL_HITTER_HOLD_TO_START_SPEED,
-          BALL_HITTER_SPEED, BALL_HITTER_MID_SPEED);
-    };
+    hardware::controller::buttonsHandlers[6][0] =
+        hardware::controller::defaultButtonsHandler;
     hardware::controller::buttonsHandlers[6][1] =
         hardware::controller::defaultButtonsHandler;
 
-    hardware::controller::buttonsHandlers[7][0] = [](uint8_t, bool) {
-      hardware::ballHitter.hit(hardware::encoders::ballHitterEncoderCount);
-    };
+    hardware::controller::buttonsHandlers[7][0] =
+        hardware::controller::defaultButtonsHandler;
     hardware::controller::buttonsHandlers[7][1] =
         hardware::controller::defaultButtonsHandler;
 

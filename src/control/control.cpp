@@ -3,7 +3,6 @@
 #include "constants.h"
 #include "hardware/hardware.h"
 #include "control/commands.h"
-#include "control/automatic/automatic.h"
 #include "control/manual/manual.h"
 
 String control::input = "";
@@ -31,7 +30,6 @@ void control::init() {
   automatic::setIsAutomaticEnabled(true);
 #endif
 
-  automatic::init();
   LOG_INFO("<Control>\tInit Done");
 }
 
@@ -65,10 +63,6 @@ void control::loop() {
     manual::setIsManualEnabled(hardware::controller::switch3State);
   }
 
-  if (automatic::isAutomaticEnabled != !hardware::controller::switch3State) {
-    automatic::setIsAutomaticEnabled(!hardware::controller::switch3State);
-  }
-
   if (hardware::controller::switch1State) {
     if (zone != Zone::RED) {
       zone = Zone::RED;
@@ -85,6 +79,4 @@ void control::loop() {
 
   manual::loop();
 #endif
-
-  automatic::loop();
 }
