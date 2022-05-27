@@ -2,8 +2,10 @@
 
 #include <stdint.h>
 
-namespace utils::math {
+namespace utils {
+namespace math {
 
 uint16_t Abs(int16_t);
 
-}
+}  // namespace math
+}  // namespace utils

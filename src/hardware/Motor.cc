@@ -42,6 +42,7 @@ void Motor::Set(uint8_t speed, HBridge state) {
 }
 
 void Motor::SetNormalized(int16_t norm_speed) {
+  // Obtain the absolute speed scaled between 0 and 255
   uint8_t speed = utils::math::Abs(norm_speed) >> 7;
 
   if (speed == 0) {
