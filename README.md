@@ -1,7 +1,7 @@
 # Mini Robocon 2021
 
 **NOTE**: This repo is in the process of rewriting. Please check out
-[`archive/old`](https://github.com/adrianchong518/MiniRobocon2021/tree/archive/old) for the old version.
+[`archive/old`](https://github.com/fms-robotics/MiniRobocon2021/tree/archive/old) for the old version.
 
 This repo contains the code for the robot participating in the
 [HK Mini Robocon 2021](https://sites.google.com/view/mini-robocon-2020/home)
