@@ -11,14 +11,14 @@ documentation for build instructions for your specific platform / environment.
 
 ## Build Environments
 
-**Debug LCD**: Builds with serial and LCD debug outputs
-**Debug No Controller**: Builds version for when no controller is plugged in
-**Debug**: Builds with serial debug output
-**Release**: Builds without all debug outputs
+- `Debug LCD`: Builds with serial and LCD debug outputs
+- `Debug No Controller`: Builds version for when no controller is plugged in
+- `Debug`: Builds with serial debug output
+- `Release`: Builds without all debug outputs
 
 ## LCD Display
 
-```monospace
+```
 | -------------------- |
 |                      |
 |                      |
@@ -31,7 +31,7 @@ documentation for build instructions for your specific platform / environment.
 
 ### Hardware
 
-```monospace
+```
 > h c
 Run hardware::calibrate()
 
@@ -44,7 +44,7 @@ Re-enable the hardware loop
 
 ### Mecanum
 
-```monospace
+```
 > m s [speed]
 Set the speed of movement (0.0 ~ 1.0)
 
@@ -88,7 +88,7 @@ Toggle whether the mecanum is enabled
 
 ### Servos
 
-```monospace
+```
 > s ru [degree]
 Set the right upper servo to [degree] (0 ~ 180)
 
@@ -114,7 +114,7 @@ State 2: Putting ball position
 
 ### Encoders
 
-```monospace
+```
 > e r
 Return the counts and error counts of x, y, ball hitter encoders
 
@@ -142,7 +142,7 @@ Clear the counts of ball hitter encoder
 
 ### Ball Hitter
 
-```monospace
+```
 > b tsd [degree]
 Set the PID target to [degree]
 
@@ -188,7 +188,7 @@ Disable PID control
 
 ### Distance Sensors (TFMini-S)
 
-```monospace
+```
 > dist vr
 Return the value of all distance sensors
 
@@ -224,7 +224,7 @@ Toggles whether auto control is enabled
 
 ### Position Control
 
-```monospace
+```
 > pos set [x-pos] [y-pos]
 Set the position target to ([x-pos], [y-pos]) (mm)
 
@@ -243,7 +243,7 @@ Toggle whether position control is enabled
 
 ### Run
 
-```monospace
+```
 > run routine [routine-name]
 Run routine with the name [routine-name]
 
