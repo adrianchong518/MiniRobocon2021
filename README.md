@@ -1,7 +1,7 @@
 # Mini Robocon 2021
 
-> **NOTE**: This repo is in the process of rewriting. Please check out
-> 05a5bb0c2b366b50d9086da25dbb93a69738d0f4 for the old version.
+**NOTE**: This repo is in the process of rewriting. Please check out
+[`archive/old`](https://github.com/adrianchong518/MiniRobocon2021/tree/archive/old) for the old version.
 
 This repo contains the code for the robot participating in the
 [HK Mini Robocon 2021](https://sites.google.com/view/mini-robocon-2020/home)
