@@ -1,19 +1,13 @@
 # Mini Robocon 2021
 
-This repo contains the code for the Arduino built on the robot, which is participating in the HK Mini Robocon 2021
+> **NOTE**: This repo is in the process of rewriting. Please check out
+> 05a5bb0c2b366b50d9086da25dbb93a69738d0f4 for the old version.
 
-The project is coded on VSCode with the extension PlatformIO installed.
+This repo contains the code for the robot participating in the
+[HK Mini Robocon 2021](https://sites.google.com/view/mini-robocon-2020/home)
 
-## Todo
-
-- [x] ~~Implement controller interfaces (switches, LCD)~~
-- [x] ~~Implement interfaces (NeoPixel) & Refactor~~
-- [x] ~~Implement sensors~~
-  - [x] ~~Collision detection~~
-  - [x] ~~Encoders (PCINT, INT)~~
-  - [x] ~~TF-Mini~~
-- [x] ~~Implement ball hitting~~
-- [ ] Implement automatic path following
+This is a [PlatformIO](https://platformio.org/) project, please refer to their
+documentation for build instructions for your specific platform / environment.
 
 ## Build Environments
 

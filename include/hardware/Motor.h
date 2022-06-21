@@ -1,18 +1,17 @@
+// Copyright (c) 2022 adrianchong518
+// License: Apache-2.0 (see LICENSE for details)
+
 #pragma once
 
 #include <stdint.h>
 
 namespace hardware {
 
-/**
- * @brief Abstraction over a motor component controlled with an *H-Bridge*
- *        through 3 pins, namely `IN A`, `IN B` and `PWM`
- */
+// Abstraction over a motor component controlled with an H-bridge through 3
+// pins, namely `IN A`, `IN B` and `PWM`
 class Motor {
  public:
-  /**
-   * H-Bridge configuration for the motor
-   */
+  // H-Bridge configurations for the motor
   enum class HBridge {
     kLowZ,
     kClockwise,
@@ -20,24 +19,13 @@ class Motor {
     kHighZ,
   };
 
-  /**
-   * @brief Creates and initializes a motor
-   *
-   * @warning `pin_pwm` **must** support PWM (`analogWrite`) on
-   *          the target
-   *
-   * @param pin_in_a Pin `IN A`
-   * @param pin_in_b Pin `IN B`
-   * @param pin_pwm Pin `PWM`
-   */
+  // Constructs a `Motor` object and initializes the pins `pin_in_a`,
+  // `pin_in_b`, and `pin_pwm`. Note that `pin_pwm` must support pwm output on
+  // the target platform.
   Motor(uint8_t pin_in_a, uint8_t pin_in_b, uint8_t pin_pwm);
 
-  /**
-   * @brief Set the `speed` and H-bridge `state` of the motor
-   *
-   * @param speed PWM set point for the motor
-   * @param state Configuration of the H-bridge
-   */
+  // Writes `speed` as a PWM duty cycle to `pin_pwm_` and sets the H-bridge to
+  // the specified `state`.
   void Set(uint8_t speed, HBridge state);
 
   /**
@@ -50,23 +38,21 @@ class Motor {
    * @param norm_speed Fixed-point number in s.15 format repsenting the motor
    *                   speed
    */
+  // Sets the speed and direction of the motor to `norm_speed`
+  //
+  // `norm_speed` is a fixed-point number in `s.15` format (-1 ~ 1) representing
+  // the normalized motor speed. A positive value represents `kClockwise`, while
+  // a negative value represents `kAntiClockwise`
   void SetNormalized(int16_t norm_speed);
 
-  /// Brake the motor with `PWM` set to `0` and the H-bridge to `High-Z`
+  /// Brake the motor with the PWM duty cycle set to `0` and the H-bridge
+  /// configuration to `High-Z`
   void Brake();
 
-  /**
-   * @brief Returns the set speed of motor
-   *
-   * @return uint8_t The set speed
-   */
+  // Returns the set `speed_` of the motor
   uint8_t GetSpeed();
 
-  /**
-   * @brief Returns the set H-bridge configuration state
-   *
-   * @return HBridge The set H-bridge configuration state
-   */
+  // Returns the set H-bridge configuration `state_`
   HBridge GetState();
 
   /**
@@ -76,15 +62,25 @@ class Motor {
    *
    * @related `SetNormalized`
    */
+
+  // Returns the normalized speed of the motor in s.15 fixed-point format
+  //
+  // See documentation for `Motor::SetNormalizedSpeed()` for more detail on the
+  // normalized speed number format.
   int16_t GetNormalizedSpeed();
 
  private:
-  uint8_t pin_in_a_;  // Pin ID of `IN A`
-  uint8_t pin_in_b_;  // Pin ID of `IN B`
-  uint8_t pin_pwm_;   // Pin ID of `PWM`
+  // Pin ID of `IN A`
+  uint8_t pin_in_a_;
+  // Pin ID of `IN B`
+  uint8_t pin_in_b_;
+  // Pin ID of `PWM`
+  uint8_t pin_pwm_;
 
-  uint8_t speed_;  // Set speed of the motor
-  HBridge state_;  // Set rotation direction of the motor
+  // Set speed of the motor
+  uint8_t speed_;
+  // Set rotation direction of the motor
+  HBridge state_;
 };
 
 }  // namespace hardware

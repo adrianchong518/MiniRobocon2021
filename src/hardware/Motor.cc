@@ -1,3 +1,6 @@
+// Copyright (c) 2022 adrianchong518
+// License: Apache-2.0 (see LICENSE for details)
+
 #include "hardware/Motor.h"
 
 #include <Arduino.h>

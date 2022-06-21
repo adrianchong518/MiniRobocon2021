@@ -1,3 +1,6 @@
+// Copyright (c) 2022 adrianchong518
+// License: Apache-2.0 (see LICENSE for details)
+
 #include "hardware/sensor/TFMiniS.h"
 
 #include <Arduino.h>
@@ -10,17 +13,6 @@ namespace sensor {
 
 namespace {
 TFMPI2C tfmpI2C;
-}
-
-TFMiniSBuilder::TFMiniSBuilder(uint8_t addr, TFMiniS::Framerate framerate)
-    : addr_(addr), framerate_(framerate) {}
-
-TFMiniS TFMiniSBuilder::build(bool& status) {
-  TFMiniS sensor(addr_, framerate_);
-
-  status = sensor.Reset();
-
-  return sensor;
 }
 
 TFMiniS::TFMiniS(uint8_t addr, TFMiniS::Framerate framerate)
@@ -80,6 +72,17 @@ int16_t TFMiniS::distance() { return distance_; }
 int16_t TFMiniS::flux() { return flux_; }
 
 int16_t TFMiniS::temperature() { return temperature_; }
+
+TFMiniSBuilder::TFMiniSBuilder(uint8_t addr, TFMiniS::Framerate framerate)
+    : addr_(addr), framerate_(framerate) {}
+
+TFMiniS TFMiniSBuilder::Build(bool& status) {
+  TFMiniS sensor(addr_, framerate_);
+
+  status = sensor.Reset();
+
+  return sensor;
+}
 
 }  // namespace sensor
 }  // namespace hardware

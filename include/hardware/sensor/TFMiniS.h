@@ -1,3 +1,8 @@
+// Copyright (c) 2022 adrianchong518
+// License: Apache-2.0 (see LICENSE for details)
+
+// Abstractions over the initialization and interface of TFMiniS ToF sensors.
+
 #pragma once
 
 #include <stdint.h>
@@ -8,60 +13,44 @@ namespace sensor {
 class TFMiniS;
 class TFMiniSBuilder;
 
-/**
- * @brief Builder for `TFMiniS`
- */
-class TFMiniSBuilder {
- public:
-  /**
-   * @brief Constructor for a new TFMiniSBuilder object
-   *
-   * @param addr      The I2C address of the TFMiniS sensor (7-bit)
-   * @param framerate Poll frequency set for the sensor
-   */
-  TFMiniSBuilder(uint8_t addr, TFMiniS::Framerate framerate);
-
-  /**
-   * @brief Create the `TFMiniS` object and initialize the sensor
-   *
-   * @param[out] status Status of the initialization process
-   *
-   * @return TFMiniS
-   */
-  TFMiniS build(bool &status);
-
- private:
-  uint8_t addr_;                  // I2C address of the device
-  TFMiniS::Framerate framerate_;  // Poll frequency set for the device
-};
-
-/**
- * @brief Abstraction over a TFMiniS ToF sensor
- */
+// Abstraction over a TFMiniS ToF sensor
 class TFMiniS {
   friend class TFMiniSBuilder;
 
  public:
-  /**
-   * @brief Return status of sending commands to TFMiniS
-   */
+  // Return status of sending commands to TFMiniS
   enum class Status : uint8_t {
-    kOk = 0,         // No Error
-    kSerialTimeout,  // Serial Timeout
-    kHeader,         // No Header Found
-    kChecksum,       // Invalid Checksum
-    kI2CTimeout,     // I2C Timeout
-    kPass,           // Reply from some system commands
-    kFail,           // Reply from some system commands
-    kI2CRead,        // I2C Read Error
-    kI2CWrite,       // I2C Write Error
-    kI2CLength,      // i2C Length Error
-    kWeak,           // Signal Strength ≤ 100
-    kStrong,         // Signal Strength Saturation
-    kFlood,          // Ambient Light Saturation
-    kMeasure,        // Measurement Error
+    // No Error
+    kOk = 0,
+    // Serial Timeout
+    kSerialTimeout,
+    // No Header Found
+    kHeader,
+    // Invalid Checksum
+    kChecksum,
+    // I2C Timeout
+    kI2CTimeout,
+    // Reply from some system commands
+    kPass,
+    // Reply from some system commands
+    kFail,
+    // I2C Read Error
+    kI2CRead,
+    // I2C Write Error
+    kI2CWrite,
+    // i2C Length Error
+    kI2CLength,
+    // Signal Strength ≤ 100
+    kWeak,
+    // Signal Strength Saturation
+    kStrong,
+    // Ambient Light Saturation
+    kFlood,
+    // Measurement Error
+    kMeasure,
   };
 
+  // Supported framerate / poll rate of TFMiniS
   enum class Framerate {
     kFrame0 = 0,
     kFrame1 = 1,
@@ -82,85 +71,89 @@ class TFMiniS {
   TFMiniS(TFMiniS &&) = default;
   TFMiniS &operator=(TFMiniS &&) = default;
 
-  /**
-   * @brief Create a builder for `TFMiniS`
-   *
-   * Using the builder is the only method of object construction.
-   * This is to prevent calling other methods of `TFMiniS` without initializing
-   * the sensor first.
-   *
-   * @param addr      The I2C address of the TFMiniS sensor (7-bit)
-   * @param framerate Poll frequency set for the sensor
-   *
-   * @return TFMiniSBuilder Builder for `TFMiniS`
-   */
+  // Creates and returns a `TFMiniSBuilder` for `TFMiniS` with the desired I2C
+  // `addr` and `framerate` of the sensor
+  //
+  // Using the builder is the only method of object construction.
   static TFMiniSBuilder Builder(uint8_t addr, Framerate framerate);
 
-  /**
-   * @brief Reset the sensor
-   *
-   * @return bool Whether the reset succeeded
-   */
-  bool Reset();
+  // Resets the sensor to the known state and returns whether the reset
+  // succeeded
+  [[nodiscard]] bool Reset();
 
-  /**
-   * @brief Update loop of for the sensor
-   *
-   * This function can be called as often as possible but the sensor will
-   * only be polled at the specified `framerate` with internal timing
-   * logic.
-   *
-   * @return bool Status of polling the sensor
-   */
+  // The update loop of for the sensor, returning the `Status` of polling the
+  // sensor
+  //
+  // This method can be called as often as possible but the sensor will
+  // only be polled at the specified `framerate` with internal timing
+  // logic.
   Status Update();
 
-  /**
-   * @brief Last polled distance reading
-   *
-   * @return int16_t distance
-   */
+  // Getter for `distance_`
   int16_t distance();
 
-  /**
-   * @brief Last polled flux reading
-   *
-   * @return int16_t flux
-   */
+  // Getter for `flux_`
   int16_t flux();
 
-  /**
-   * @brief Last polled temperature reading
-   *
-   * @return int16_t temperature
-   */
+  // Getter for `temperature_`
   int16_t temperature();
 
  private:
-  /**
-   * @brief Internal constructor for a new TFMiniS object
-   *
-   * @param addr      The I2C address of the TFMiniS sensor (7-bit)
-   * @param framerate Poll frequency set for the sensor
-   */
+  // Internal constructor for a new TFMiniS object, taking in the desired I2C
+  // `addr` and `framerate` of the sensor
   TFMiniS(uint8_t addr, Framerate framerate);
 
-  /**
-   * @brief Poll the reading from the sensor over I2C
-   *
-   * @returns Status Status of polling the sensor
-   */
+  // Polls the reading from the sensor over I2C and returns the `Status` of
+  // polling the sensor
   Status Poll();
 
-  uint8_t addr_;         // I2C address of the device
-  Framerate framerate_;  // Poll frequency set for the device
+  // I2C address of the device
+  uint8_t addr_;
+  // Poll frequency set for the device
+  Framerate framerate_;
 
-  int16_t distance_ = 0;     // Distance read in the previous `Poll`
-  int16_t flux_ = 0;         // Flux read in the previous `Poll`
-  int16_t temperature_ = 0;  // Temperature read in the previous `Poll`
+  // Distance read in the previous `Poll`
+  int16_t distance_ = 0;
+  // Flux read in the previous `Poll`
+  int16_t flux_ = 0;
+  // Temperature read in the previous `Poll`
+  int16_t temperature_ = 0;
 
-  uint16_t poll_interval_;           // Time interval between polling (`ms`)
-  uint32_t next_poll_time_ = 0;      // Time for the next poll (`ms`)
-  uint32_t previous_poll_time_ = 0;  // Timestamp of the last poll (`ms`)
+  // Time interval between polling (`ms`)
+  uint16_t poll_interval_;
+  // Time for the next poll (`ms`)
+  uint32_t next_poll_time_ = 0;
+  // Timestamp of the last poll (`ms`)
+  uint32_t previous_poll_time_ = 0;
+};
+
+// Builder for `TFMiniS`
+//
+// A builder pattern is used to prevent the usage of a `TFMiniS` sensor without
+// first initializing it to a known, desired state.
+class TFMiniSBuilder {
+ public:
+  // Constructor for a new `TFMiniSBuilder` object, taking in the desired I2C
+  // `addr` and `framerate` for the sensor
+  TFMiniSBuilder(uint8_t addr, TFMiniS::Framerate framerate);
+
+  /**
+   * @brief Create the `TFMiniS` object and initialize the sensor
+   *
+   * @param[out] status Status of the initialization process
+   *
+   * @return TFMiniS
+   */
+  // Creates the `TFMiniS` object and initializes the sensor before returning
+  // the object. The initialization status is returned through the `status`
+  // out parameter.
+  TFMiniS Build(bool &status);
+
+ private:
+  // I2C address of the device
+  uint8_t addr_;
+  // Poll frequency set for the device
+  TFMiniS::Framerate framerate_;
 };
 
 }  // namespace sensor
