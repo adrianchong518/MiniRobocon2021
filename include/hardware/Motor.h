@@ -28,16 +28,6 @@ class Motor {
   // the specified `state`.
   void Set(uint8_t speed, HBridge state);
 
-  /**
-   * @brief Set the normalized speed of the motor
-   *
-   * Set the speed of the motor based on `speed` normalized between -1
-   * and 1, where a positive value represents `Clockwise` and a
-   * negative value represents `Anti Clockwise`
-   *
-   * @param norm_speed Fixed-point number in s.15 format repsenting the motor
-   *                   speed
-   */
   // Sets the speed and direction of the motor to `norm_speed`
   //
   // `norm_speed` is a fixed-point number in `s.15` format (-1 ~ 1) representing
@@ -54,14 +44,6 @@ class Motor {
 
   // Returns the set H-bridge configuration `state_`
   HBridge GetState();
-
-  /**
-   * @brief Returns the signed normalized speed of the motor
-   *
-   * @return int16_t The set normalized speed in s.15 fixed-point number
-   *
-   * @related `SetNormalized`
-   */
 
   // Returns the normalized speed of the motor in s.15 fixed-point format
   //

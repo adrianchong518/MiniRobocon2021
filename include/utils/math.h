@@ -8,6 +8,7 @@
 namespace utils {
 namespace math {
 
+// Returns the absolute value of an `int16_t` integer
 uint16_t Abs(int16_t);
 
 }  // namespace math
