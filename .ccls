@@ -1,0 +1,33 @@
+clang
+
+%c -std=gnu11 -fno-fat-lto-objects -Ofast -Wall -ffunction-sections -fdata-sections -flto -mmcu=atmega2560
+%cpp -fno-exceptions -fno-threadsafe-statics -fpermissive -std=gnu++11 -Ofast -Wall -ffunction-sections -fdata-sections -flto -mmcu=atmega2560
+
+-I/Users/adrianchong/dev/fms-robotics/Mini Robocon 2021/MiniRobocon2021/include
+-I/Users/adrianchong/dev/fms-robotics/Mini Robocon 2021/MiniRobocon2021/src
+-I/Users/adrianchong/dev/fms-robotics/Mini Robocon 2021/MiniRobocon2021/.pio/libdeps/Debug LCD/Adafruit NeoPixel
+-I/Users/adrianchong/dev/fms-robotics/Mini Robocon 2021/MiniRobocon2021/.pio/libdeps/Debug LCD/TFMPI2C/src
+-I/Users/adrianchong/.platformio/packages/framework-arduino-avr/libraries/Wire/src
+-I/Users/adrianchong/dev/fms-robotics/Mini Robocon 2021/MiniRobocon2021/.pio/libdeps/Debug LCD/Servo/src
+-I/Users/adrianchong/.platformio/packages/framework-arduino-avr/cores/arduino
+-I/Users/adrianchong/.platformio/packages/framework-arduino-avr/variants/mega
+-I/Users/adrianchong/dev/fms-robotics/Mini Robocon 2021/MiniRobocon2021/lib/JY901
+-I/Users/adrianchong/dev/fms-robotics/Mini Robocon 2021/MiniRobocon2021/lib/PID
+-I/Users/adrianchong/dev/fms-robotics/Mini Robocon 2021/MiniRobocon2021/lib/hd44780
+-I/Users/adrianchong/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src
+-I/Users/adrianchong/.platformio/packages/framework-arduino-avr/libraries/HID/src
+-I/Users/adrianchong/.platformio/packages/framework-arduino-avr/libraries/SPI/src
+-I/Users/adrianchong/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src
+-I/Users/adrianchong/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/7.3.0/include
+-I/Users/adrianchong/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/7.3.0/include-fixed
+-I/Users/adrianchong/.platformio/packages/toolchain-atmelavr/avr/include
+
+-DPLATFORMIO=60106
+-DARDUINO_AVR_MEGA2560
+-DLOG_LEVEL=1
+-DNO_CONTROLLER=0
+-DLCD_DEBUG_ENABLED=1
+-DF_CPU=16000000L
+-DARDUINO_ARCH_AVR
+-DARDUINO=10808
+-D__AVR_ATmega2560__
